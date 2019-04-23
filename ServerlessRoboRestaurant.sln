@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientAPI", "ClientAPI\Clie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{1DFFF7BC-746E-42E8-A0A4-C0F1D51D48DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoDataSeeder", "DemoDataSeeder\DemoDataSeeder.csproj", "{D488130A-9020-4AF0-879A-326E393FEEA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1DFFF7BC-746E-42E8-A0A4-C0F1D51D48DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DFFF7BC-746E-42E8-A0A4-C0F1D51D48DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DFFF7BC-746E-42E8-A0A4-C0F1D51D48DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D488130A-9020-4AF0-879A-326E393FEEA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D488130A-9020-4AF0-879A-326E393FEEA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D488130A-9020-4AF0-879A-326E393FEEA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D488130A-9020-4AF0-879A-326E393FEEA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
