@@ -419,7 +419,7 @@ namespace DemoDataSeeder
             var order = new Order
             {
                 Id = Guid.NewGuid().ToString(),
-                TimePlaced = DateTime.UtcNow,
+                TimePlacedUtc = DateTime.UtcNow,
                 Status = OrderStatus.New,
                 OrderItems = new List<OrderItem>
                 {
@@ -439,7 +439,7 @@ namespace DemoDataSeeder
             order = new Order
             {
                 Id = Guid.NewGuid().ToString(),
-                TimePlaced = DateTime.UtcNow,
+                TimePlacedUtc = DateTime.UtcNow,
                 Status = OrderStatus.New,
                 OrderItems = new List<OrderItem>
                 {
@@ -459,7 +459,7 @@ namespace DemoDataSeeder
             order = new Order
             {
                 Id = Guid.NewGuid().ToString(),
-                TimePlaced = DateTime.UtcNow,
+                TimePlacedUtc = DateTime.UtcNow,
                 Status = OrderStatus.New,
                 OrderItems = new List<OrderItem>
                 {

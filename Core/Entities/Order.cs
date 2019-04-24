@@ -5,8 +5,9 @@ namespace Core.Entities
 {
     public class Order : EntityBase
     {
-        public DateTime TimePlaced { get; set; }
+        public DateTime TimePlacedUtc { get; set; }
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }
+        public DateTime LastModifiedUtc { get; set; }
     }
 }
