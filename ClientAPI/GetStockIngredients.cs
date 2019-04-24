@@ -17,12 +17,13 @@ namespace ClientAPI
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log,
-            [Inject]ITableRepositoryFactory<StockIngredient> tableRepositoryFactory)
+            [Inject]IBaseRepositoryFactory<StockIngredient> tableRepositoryFactory)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var storageConnectionString = System.Environment.GetEnvironmentVariable("AzureWebJobsStorage");
-            var repo = tableRepositoryFactory.GetInstance(storageConnectionString, Constants.StockTableName);
+            var cosmosDbEndpoint = System.Environment.GetEnvironmentVariable("CosmosDbEndpoint");
+            var cosmosDbKey = System.Environment.GetEnvironmentVariable("CosmosDbKey");
+            var repo = tableRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.StockCollectionName);
 
             var result = await repo.GetAll();
 

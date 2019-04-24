@@ -4,6 +4,7 @@
     {
         Starter,
         Main,
+        Side,
         Desert,
         Beverage
     }

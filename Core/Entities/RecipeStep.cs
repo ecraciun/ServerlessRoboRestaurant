@@ -4,5 +4,6 @@
     {
         public int StepOrder { get; set; }
         public int SecondsRequired { get; set; }
+        public string StepName { get; set; }
     }
 }

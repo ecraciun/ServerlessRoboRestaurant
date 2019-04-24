@@ -1,17 +1,9 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Core.Entities
 {
-    public class Dish : TableEntity
+    public class Dish : EntityBase
     {
-        public Dish()
-        {
-            this.PartitionKey = Constants.DefaultPartitionName;
-        }
-
         public string Title { get; set; }
         public string Description { get; set; }
         public DishType Type { get; set; }

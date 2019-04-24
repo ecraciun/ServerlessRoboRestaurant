@@ -14,7 +14,7 @@ namespace ClientAPI
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped(typeof(ITableRepositoryFactory<>), typeof(TableStorageRepositoryFactory<>));
+            services.AddScoped(typeof(IBaseRepositoryFactory<>), typeof(CosmosDbBaseRepositoryFactory<>));
         }
     }
 }

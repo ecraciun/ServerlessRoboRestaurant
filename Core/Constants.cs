@@ -3,8 +3,9 @@
     public static class Constants
     {
         public const string DefaultPartitionName = "default";
-        public const string StockTableName = "RestaurantStock";
-        public const string OrdersTableName = "Orders";
-        public const string DishesTableName = "Menu";
+        public const string StockCollectionName = "RestaurantStock";
+        public const string OrdersCollectionName = "Orders";
+        public const string DishesCollectionName = "Menu";
+        public const string DatabaseName = "RoboRestaurant";
     }
 }
