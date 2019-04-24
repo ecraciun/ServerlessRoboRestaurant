@@ -28,22 +28,49 @@ namespace Core.Services
 
         public async Task Add(T entity)
         {
-            throw new NotImplementedException();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (string.IsNullOrEmpty(entity.RowKey))
+            {
+                entity.RowKey = Guid.NewGuid().ToString(); // or maybe throw an exception
+            }
+
+            var insertOperation = TableOperation.Insert(entity);
+            await _cloudTable.ExecuteAsync(insertOperation);
         }
 
         public async Task AddBulk(IList<T> entities)
         {
-            throw new NotImplementedException();
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+            var batchInsertOperation = new TableBatchOperation();
+            foreach(var entity in entities)
+            {
+                if (string.IsNullOrEmpty(entity.RowKey))
+                {
+                    entity.RowKey = Guid.NewGuid().ToString(); 
+                }
+                batchInsertOperation.Insert(entity);
+            }
+            await _cloudTable.ExecuteBatchAsync(batchInsertOperation);
         }
 
         public async Task Delete(T entity)
         {
-            throw new NotImplementedException();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (string.IsNullOrEmpty(entity.RowKey)) throw new ArgumentNullException(nameof(entity.RowKey));
+
+            var insertOperation = TableOperation.Delete(entity);
+            await _cloudTable.ExecuteAsync(insertOperation);
         }
 
         public async Task<T> Get(string id)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+
+            var retriveOperation = TableOperation.Retrieve<T>(Constants.DefaultPartitionName, id);
+            var result = await _cloudTable.ExecuteAsync(retriveOperation);
+
+            return result.Result as T;
         }
 
         public async Task<IList<T>> GetAll()
@@ -70,7 +97,11 @@ namespace Core.Services
 
         public async Task Upsert(T entity)
         {
-            throw new NotImplementedException();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (string.IsNullOrEmpty(entity.RowKey)) throw new ArgumentNullException(nameof(entity.RowKey));
+
+            var upsertOperation = TableOperation.InsertOrReplace(entity);
+            await _cloudTable.ExecuteAsync(upsertOperation);
         }
     }
 }
