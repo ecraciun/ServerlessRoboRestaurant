@@ -10,7 +10,7 @@ namespace Core.Services.Interfaces
     {
         Task<IList<T>> GetAll();
         Task<T> Get(string id);
-        Task Add(T entity);
+        Task<string> Add(T entity);
         Task Delete(string id);
         Task Upsert(T entity);
         Task<IList<T>> GetWhere(Expression<Func<T, bool>> predicate);

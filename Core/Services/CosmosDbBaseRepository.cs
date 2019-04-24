@@ -24,7 +24,7 @@ namespace Core.Services
             _collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, _collectionId);
         }
 
-        public async Task Add(T entity)
+        public async Task<string> Add(T entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             if (string.IsNullOrEmpty(entity.Id))
@@ -32,7 +32,8 @@ namespace Core.Services
                 entity.Id = Guid.NewGuid().ToString(); // or maybe throw an exception
             }
 
-            await _documentClient.CreateDocumentAsync(_collectionUri, entity, disableAutomaticIdGeneration: true);
+            var result = await _documentClient.CreateDocumentAsync(_collectionUri, entity, disableAutomaticIdGeneration: true);
+            return result.Resource.Id;
             
         }
 
