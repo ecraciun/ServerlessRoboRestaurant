@@ -176,7 +176,7 @@ namespace DemoDataSeeder
 
             foreach(var toAdd in _stockIngredients)
             {
-                await _documentClient.CreateDocumentAsync(collectionUri, toAdd);
+                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
             Console.WriteLine($"{Constants.StockCollectionName} table and data seeded.");
@@ -401,7 +401,7 @@ namespace DemoDataSeeder
 
             foreach (var toAdd in _dishes)
             {
-                await _documentClient.CreateDocumentAsync(collectionUri, toAdd);
+                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
             Console.WriteLine($"{Constants.DishesCollectionName} table and data seeded.");
@@ -474,7 +474,7 @@ namespace DemoDataSeeder
 
             foreach (var toAdd in _orders)
             {
-                await _documentClient.CreateDocumentAsync(collectionUri, toAdd);
+                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
             Console.WriteLine($"{Constants.OrdersCollectionName} table and data seeded.");

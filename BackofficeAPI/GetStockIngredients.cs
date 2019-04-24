@@ -15,7 +15,7 @@ namespace BackofficeAPI
     {
         [FunctionName("GetStockIngredients")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log,
             [Inject]IBaseRepositoryFactory<StockIngredient> stockIngredientsRepositoryFactory)
         {

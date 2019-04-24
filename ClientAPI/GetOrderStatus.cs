@@ -7,6 +7,10 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Core.Services.Interfaces;
+using Core.Entities;
+using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
+using Core;
 
 namespace ClientAPI
 {
@@ -14,20 +18,24 @@ namespace ClientAPI
     {
         [FunctionName("GetOrderStatus")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            string orderId = req.Query["orderId"];
+            if(Guid.TryParse(orderId, out var orderGuid))
+            {
+                var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
+                var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");
+                var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
+                var result = await repo.Get(orderId);
+                if (result == null) return new NotFoundResult();
+                return new JsonResult(result.Status);
+            }
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            return new BadRequestObjectResult("Missing order id, or not a valid id");
         }
     }
 }

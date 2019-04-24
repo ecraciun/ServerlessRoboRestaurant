@@ -7,6 +7,7 @@ using Core.Entities;
 using Microsoft.Azure.Documents.Linq;
 using System.Linq.Expressions;
 using System.Linq;
+using Microsoft.Azure.Documents;
 
 namespace Core.Services
 {
@@ -31,23 +32,41 @@ namespace Core.Services
                 entity.Id = Guid.NewGuid().ToString(); // or maybe throw an exception
             }
 
-            await _documentClient.CreateDocumentAsync(_collectionUri, entity);
+            await _documentClient.CreateDocumentAsync(_collectionUri, entity, disableAutomaticIdGeneration: true);
+            
         }
 
         public async Task Delete(string id)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
-            await _documentClient.DeleteDocumentAsync(UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, id));
+            try
+            {
+                await _documentClient.DeleteDocumentAsync(UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, id));
+            }
+            catch(DocumentClientException ex) when (ex.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                //TODO: treat ex
+            }
+            catch(Exception ex)
+            {
+                //TODO: treat ex
+            }
         }
 
         public async Task<T> Get(string id)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
-            var response = await _documentClient.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, id));
-
-            return response.Document;
+            try
+            {
+                var response = await _documentClient.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, id));
+                return response.Document;
+            }
+            catch (DocumentClientException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
         public async Task<IList<T>> GetAll()
