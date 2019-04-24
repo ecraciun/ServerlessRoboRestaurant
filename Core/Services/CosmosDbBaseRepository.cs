@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Documents.Client;
 using Core.Entities;
 using Microsoft.Azure.Documents.Linq;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace Core.Services
 {
@@ -59,6 +61,27 @@ namespace Core.Services
                 while (queryable.HasMoreResults)
                 {
                     foreach(var entity in await queryable.ExecuteNextAsync<T>())
+                    {
+                        result.Add(entity);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<IList<T>> GetWhere(Expression<Func<T, bool>> predicate)
+        {
+            List<T> result = new List<T>();
+
+            using (var queryable = _documentClient.CreateDocumentQuery<T>(
+                _collectionUri, new FeedOptions { MaxItemCount = 100 })
+                .Where(predicate)
+                .AsDocumentQuery())
+            {
+                while (queryable.HasMoreResults)
+                {
+                    foreach (var entity in await queryable.ExecuteNextAsync<T>())
                     {
                         result.Add(entity);
                     }
