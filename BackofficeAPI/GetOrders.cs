@@ -11,31 +11,31 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
-namespace ClientAPI
+namespace BackofficeAPI
 {
-    public static class GetMenu
+    public static class GetOrders
     {
-        [FunctionName("GetMenu")]
+        [FunctionName("GetOrders")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log,
-            [Inject]IBaseRepositoryFactory<Dish> dishesRepositoryFactory)
+            [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,
+            ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
             var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");
-            var repo = dishesRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.DishesCollectionName);
+            var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
 
-            string type = req.Query["type"];
-            IList<Dish> result = null;
-            if (string.IsNullOrEmpty(type))
+            string status = req.Query["status"];
+            IList<Order> result = null;
+            if (string.IsNullOrEmpty(status))
             {
                 result = await repo.GetAll();
             }
-            if (Enum.TryParse(type, out DishType dishType))
+            if (Enum.TryParse(status, out OrderStatus orderStatus))
             {
-                result = await repo.GetWhere(x => x.Type == dishType);
+                result = await repo.GetWhere(x => x.Status == orderStatus);
             }
 
             return new JsonResult(result);

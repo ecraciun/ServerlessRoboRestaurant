@@ -1,16 +1,14 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Core;
+using Core.Entities;
+using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Core.Services.Interfaces;
-using Core.Entities;
+using System;
+using System.Threading.Tasks;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
-using Core;
 
 namespace ClientAPI
 {
@@ -25,7 +23,7 @@ namespace ClientAPI
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string orderId = req.Query["orderId"];
-            if(Guid.TryParse(orderId, out var orderGuid))
+            if (Guid.TryParse(orderId, out var orderGuid))
             {
                 var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
                 var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");

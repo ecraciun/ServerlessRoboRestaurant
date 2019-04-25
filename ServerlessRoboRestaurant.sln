@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoDataSeeder", "DemoDataSeeder\DemoDataSeeder.csproj", "{D488130A-9020-4AF0-879A-326E393FEEA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackofficeAPI", "BackofficeAPI\BackofficeAPI.csproj", "{4DDD321D-0D6B-48C7-84AF-5625DD39DED3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackofficeAPI", "BackofficeAPI\BackofficeAPI.csproj", "{4DDD321D-0D6B-48C7-84AF-5625DD39DED3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
