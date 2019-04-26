@@ -25,8 +25,8 @@ namespace ClientAPI
             string orderId = req.Query["orderId"];
             if (Guid.TryParse(orderId, out var orderGuid))
             {
-                var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
-                var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");
+                var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
+                var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                 var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
                 var result = await repo.Get(orderId);
                 if (result == null) return new NotFoundResult();

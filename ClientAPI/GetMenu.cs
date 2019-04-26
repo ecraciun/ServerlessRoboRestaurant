@@ -23,8 +23,8 @@ namespace ClientAPI
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
-            var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");
+            var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
+            var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
             var repo = dishesRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.DishesCollectionName);
 
             string type = req.Query["type"];

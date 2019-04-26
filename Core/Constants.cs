@@ -9,5 +9,8 @@
         public const string DatabaseName                    = "RoboRestaurant";
         public const string SupplierOrdersCollectionName    = "SupplierOrders";
         public const string SuppliersCollectionName         = "Suppliers";
+
+        public const string CosmosDbEndpointKeyName         = "CosmosDbEndpoint";
+        public const string CosmosDbKeyKeyName              = "CosmosDbKey";
     }
 }

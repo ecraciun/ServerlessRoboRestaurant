@@ -23,8 +23,8 @@ namespace BackofficeAPI
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
-            var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");
+            var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
+            var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
             var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
 
             string status = req.Query["status"];

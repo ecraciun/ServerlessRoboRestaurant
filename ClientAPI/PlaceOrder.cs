@@ -28,8 +28,8 @@ namespace ClientAPI
             try
             {
                 var order = JsonConvert.DeserializeObject<Order>(requestBody);
-                var cosmosDbEndpoint = Environment.GetEnvironmentVariable("CosmosDbEndpoint");
-                var cosmosDbKey = Environment.GetEnvironmentVariable("CosmosDbKey");
+                var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
+                var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                 var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
                 var id = await repo.Add(order);
                 return new CreatedResult($"api/{nameof(GetOrderStatus)}/{id}", null);
