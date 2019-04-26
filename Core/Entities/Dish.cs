@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Core.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class Dish : EntityBase
     {
         public string Title { get; set; }
