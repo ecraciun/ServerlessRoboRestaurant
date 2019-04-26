@@ -4,7 +4,7 @@ using System;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
-namespace Core.Tests
+namespace Core.Tests.Services
 {
     [TestCaseOrderer("TestsCommon.PriorityOrderer", "TestsCommon")]
     public class CosmosDbBaseRepositoryFactoryTests
@@ -13,7 +13,7 @@ namespace Core.Tests
         public void GetInstance_Should_Throw_When_EndpointUri_Is_Null()
         {
             var target = new CosmosDbBaseRepositoryFactory<EntityBase>();
-            var ex = Assert.Throws<ArgumentNullException>(() => 
+            var ex = Assert.Throws<ArgumentNullException>(() =>
                 target.GetInstance(null, "abc", "abc"));
             Assert.NotNull(ex);
         }
@@ -22,7 +22,7 @@ namespace Core.Tests
         public void GetInstance_Should_Throw_When_Key_Is_Null()
         {
             var target = new CosmosDbBaseRepositoryFactory<EntityBase>();
-            var ex = Assert.Throws<ArgumentNullException>(() => 
+            var ex = Assert.Throws<ArgumentNullException>(() =>
                 target.GetInstance("abc", null, "abc"));
             Assert.NotNull(ex);
         }
@@ -31,7 +31,7 @@ namespace Core.Tests
         public void GetInstance_Should_Throw_When_CollectionId_Is_Null()
         {
             var target = new CosmosDbBaseRepositoryFactory<EntityBase>();
-            var ex = Assert.Throws<ArgumentNullException>(() => 
+            var ex = Assert.Throws<ArgumentNullException>(() =>
                 target.GetInstance("abc", "abc", null));
             Assert.NotNull(ex);
         }
@@ -40,7 +40,7 @@ namespace Core.Tests
         public void GetInstance_Should_Throw_When_Invalid_Uri()
         {
             var target = new CosmosDbBaseRepositoryFactory<EntityBase>();
-            var ex = Assert.Throws<UriFormatException>(() => 
+            var ex = Assert.Throws<UriFormatException>(() =>
                 target.GetInstance("abc", "abc", "abc"));
             Assert.NotNull(ex);
         }
@@ -58,7 +58,7 @@ namespace Core.Tests
         public void GetInstance_Should_Return_New_Repository_Instance_When_Parameters_Are_Valid()
         {
             var target = new CosmosDbBaseRepositoryFactory<EntityBase>();
-            var repo =  
+            var repo =
                 target.GetInstance("https://localhost:8081", "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==", "abc");
             Assert.NotNull(repo);
         }

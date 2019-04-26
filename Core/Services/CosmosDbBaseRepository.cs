@@ -13,11 +13,11 @@ namespace Core.Services
 {
     public class CosmosDbBaseRepository<T> : IBaseRepository<T> where T : EntityBase, new()
     {
-        private readonly DocumentClient _documentClient;
+        private readonly IDocumentClient _documentClient;
         private readonly string _collectionId;
         private readonly Uri _collectionUri;
 
-        public CosmosDbBaseRepository(DocumentClient documentClient, string collectionId)
+        public CosmosDbBaseRepository(IDocumentClient documentClient, string collectionId)
         {
             _documentClient = documentClient ?? throw new ArgumentNullException(nameof(documentClient));
             _collectionId = string.IsNullOrEmpty(collectionId) ? throw new ArgumentNullException(nameof(collectionId)) : collectionId;
