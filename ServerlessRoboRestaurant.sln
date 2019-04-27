@@ -15,11 +15,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0764CF5D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestsCommon", "Tests\TestsCommon\TestsCommon.csproj", "{2B4FAA77-B61B-4DE9-A613-11B1264D162E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Tests\Core.Tests\Core.Tests.csproj", "{3FDC1C6E-08A8-41B4-99DE-E70AC0D863C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Tests\Core.Tests\Core.Tests.csproj", "{3FDC1C6E-08A8-41B4-99DE-E70AC0D863C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackofficeAPI.Tests", "Tests\BackofficeAPI.Tests\BackofficeAPI.Tests.csproj", "{F848857D-7461-4BE7-8132-845AB180D874}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackofficeAPI.Tests", "Tests\BackofficeAPI.Tests\BackofficeAPI.Tests.csproj", "{F848857D-7461-4BE7-8132-845AB180D874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientAPI.Tests", "Tests\ClientAPI.Tests\ClientAPI.Tests.csproj", "{2188DA70-916F-4FBC-9524-5C088828EFCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientAPI.Tests", "Tests\ClientAPI.Tests\ClientAPI.Tests.csproj", "{2188DA70-916F-4FBC-9524-5C088828EFCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".doc", ".doc", "{9965FC24-DCAE-4EF0-B8B3-63E091164B8E}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
