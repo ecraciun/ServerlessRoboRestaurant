@@ -16,8 +16,8 @@ namespace BackofficeAPI
         [FunctionName("GetStockIngredients")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log,
-            [Inject]IBaseRepositoryFactory<StockIngredient> stockIngredientsRepositoryFactory)
+            [Inject]IBaseRepositoryFactory<StockIngredient> stockIngredientsRepositoryFactory,
+            ILogger log)
         {
             var cosmosDbEndpoint = System.Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
             var cosmosDbKey = System.Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
