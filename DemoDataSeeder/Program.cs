@@ -4,11 +4,13 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DemoDataSeeder
 {
+    [ExcludeFromCodeCoverage]
     class Program
     {
         private const string Endpoint = "https://localhost:8081";

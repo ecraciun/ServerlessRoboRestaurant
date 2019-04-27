@@ -11,6 +11,7 @@ using Core.Entities;
 using Core.Services.Interfaces;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 using Core;
+using System.Linq;
 
 namespace ClientAPI
 {
@@ -22,23 +23,33 @@ namespace ClientAPI
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            try
+            if (!string.IsNullOrEmpty(requestBody))
             {
-                var order = JsonConvert.DeserializeObject<Order>(requestBody);
-                var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
-                var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
-                var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
-                var id = await repo.Add(order);
-                return new CreatedResult($"api/{nameof(GetOrderStatus)}/{id}", null);
+                try
+                {
+                    var order = JsonConvert.DeserializeObject<Order>(requestBody);
+                    if(order.OrderItems == null || !order.OrderItems.Any())
+                    {
+                        return new BadRequestObjectResult("Invalid order");
+                    }
+                    order.LastModifiedUtc = order.TimePlacedUtc = DateTime.UtcNow;
+                    order.Status = OrderStatus.New;
+                    
+                    var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
+                    var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
+                    var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
+                    var id = await repo.Add(order);
+                    return new CreatedResult($"api/{nameof(GetOrderStatus)}/{id}", null);
+                }
+                catch (Exception ex) when (ex is JsonReaderException || ex is JsonSerializationException)
+                {
+                    log.LogError("Order deserialization error", ex);
+                    return new BadRequestObjectResult("Invalid order");
+                }
             }
-            catch(JsonSerializationException ex)
-            {
-                log.LogError("Order deserialization error", ex);
-                return new BadRequestObjectResult("Invalid order");
-            }
+
+            return new BadRequestResult();
         }
     }
 }

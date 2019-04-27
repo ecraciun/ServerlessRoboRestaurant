@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BackofficeAPI.Tests
 {
-    public class UnitTest1
+    public class GetSupplierOrdersTests
     {
         [Fact]
         public void Test1()

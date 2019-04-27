@@ -21,8 +21,6 @@ namespace ClientAPI
             ILogger log,
             [Inject]IBaseRepositoryFactory<Dish> dishesRepositoryFactory)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
             var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
             var repo = dishesRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.DishesCollectionName);
@@ -33,7 +31,8 @@ namespace ClientAPI
             {
                 result = await repo.GetAll();
             }
-            if (Enum.TryParse(type, out DishType dishType))
+            if (Enum.TryParse(type, out DishType dishType) &&
+                Enum.IsDefined(typeof(DishType), dishType))
             {
                 result = await repo.GetWhere(x => x.Type == dishType);
             }

@@ -1,5 +1,8 @@
-﻿namespace Core
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Core
 {
+    [ExcludeFromCodeCoverage]
     public static class Constants
     {
         public const string DefaultPartitionName            = "default";

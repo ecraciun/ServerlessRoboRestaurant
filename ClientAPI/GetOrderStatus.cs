@@ -20,8 +20,6 @@ namespace ClientAPI
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             string orderId = req.Query["orderId"];
             if (Guid.TryParse(orderId, out var orderGuid))
             {

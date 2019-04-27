@@ -19,8 +19,6 @@ namespace BackofficeAPI
             ILogger log,
             [Inject]IBaseRepositoryFactory<StockIngredient> stockIngredientsRepositoryFactory)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             var cosmosDbEndpoint = System.Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
             var cosmosDbKey = System.Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
             var repo = stockIngredientsRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.StockCollectionName);

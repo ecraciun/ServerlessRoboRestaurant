@@ -1,9 +1,9 @@
 using System;
 using Xunit;
 
-namespace ClientAPI.Tests
+namespace BackofficeAPI.Tests
 {
-    public class UnitTest1
+    public class GetOrdersTests
     {
         [Fact]
         public void Test1()

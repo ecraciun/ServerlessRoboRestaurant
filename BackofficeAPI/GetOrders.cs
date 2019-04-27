@@ -21,8 +21,6 @@ namespace BackofficeAPI
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
             var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
             var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
@@ -33,7 +31,8 @@ namespace BackofficeAPI
             {
                 result = await repo.GetAll();
             }
-            if (Enum.TryParse(status, out OrderStatus orderStatus))
+            if (Enum.TryParse(status, out OrderStatus orderStatus) &&
+                Enum.IsDefined(typeof(OrderStatus), orderStatus))
             {
                 result = await repo.GetWhere(x => x.Status == orderStatus);
             }
