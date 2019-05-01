@@ -21,6 +21,8 @@ namespace DemoDataSeeder
         private static List<StockIngredient> _stockIngredients = new List<StockIngredient>();
         private static List<Dish> _dishes = new List<Dish>();
         private static List<Order> _orders = new List<Order>();
+        private static List<Supplier> _suppliers = new List<Supplier>();
+        private static List<SupplierOrder> _supplierOrders = new List<SupplierOrder>();
 
         static async Task Main(string[] args)
         {
@@ -31,6 +33,8 @@ namespace DemoDataSeeder
             await EnsureAndSeedStock();
             await EnsureAndSeedDishes();
             await EnsureAndSeedOrders();
+            await EnsureAndSeedSuppliers();
+            await EnsureAndSeedSupplierOrders();
 
             Console.WriteLine("Tables and data created.");
         }
@@ -43,7 +47,7 @@ namespace DemoDataSeeder
         private static async Task EnsureAndSeedStock()
         {
             Console.WriteLine($"Ensuring {Constants.StockCollectionName} table and data...");
-            await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink, 
+            await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.StockCollectionName },
                 new RequestOptions { OfferThroughput = CollectionThroughput });
             var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.StockCollectionName);
@@ -176,7 +180,7 @@ namespace DemoDataSeeder
             _stockIngredients.Add(ingredient);
 
 
-            foreach(var toAdd in _stockIngredients)
+            foreach (var toAdd in _stockIngredients)
             {
                 await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
@@ -210,7 +214,7 @@ namespace DemoDataSeeder
                             StepName = "Make hamburger meat",
                             StepOrder = 1,
                             SecondsRequired = 10
-                        }, 
+                        },
                         new RecipeStep
                         {
                             StepName = "Cook hamburger meat",
@@ -480,6 +484,218 @@ namespace DemoDataSeeder
             }
 
             Console.WriteLine($"{Constants.OrdersCollectionName} table and data seeded.");
+        }
+
+        private static async Task EnsureAndSeedSuppliers()
+        {
+            Console.WriteLine($"Ensuring {Constants.SuppliersCollectionName} table and data...");
+
+            await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
+                new DocumentCollection { Id = Constants.SuppliersCollectionName },
+                new RequestOptions { OfferThroughput = CollectionThroughput });
+            var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.SuppliersCollectionName);
+
+            var supplier = new Supplier
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Supplier 1",
+                TimeToDelivery = 20,
+                IngredientsForSale = new List<SupplierIngredient>
+                {
+                    new SupplierIngredient
+                    {
+                        Name = "Salt",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Pepper",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Ground beef meat",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Beef steak slice",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Chili",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Potato",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Tomato",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Bread bun",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Ketchup",
+                        UnitPrice = 2
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Mustard",
+                        UnitPrice = 2
+                    }
+                }
+            };
+            _suppliers.Add(supplier);
+
+            supplier = new Supplier
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Supplier 2",
+                TimeToDelivery = 15,
+                IngredientsForSale = new List<SupplierIngredient>
+                {
+                    new SupplierIngredient
+                    {
+                        Name = "Ketchup",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Mustard",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Mayonnaise",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Egg",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Hotdog",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Cheddar",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Vegetable oil",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Bacon",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Beer",
+                        UnitPrice = 3
+                    },
+                    new SupplierIngredient
+                    {
+                        Name = "Soft drink",
+                        UnitPrice = 3
+                    }
+                }
+            };
+            _suppliers.Add(supplier);
+
+            foreach (var toAdd in _suppliers)
+            {
+                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
+            }
+
+            Console.WriteLine($"{Constants.SuppliersCollectionName} table and data seeded.");
+        }
+
+        private static async Task EnsureAndSeedSupplierOrders()
+        {
+            Console.WriteLine($"Ensuring {Constants.SupplierOrdersCollectionName} table and data...");
+
+            await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
+                new DocumentCollection { Id = Constants.SupplierOrdersCollectionName },
+                new RequestOptions { OfferThroughput = CollectionThroughput });
+            var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.SupplierOrdersCollectionName);
+
+            var supplierOrder = new SupplierOrder
+            {
+                Id = Guid.NewGuid().ToString(),
+                CreatedAt = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow,
+                SupplierId = _suppliers.First().Id,
+                Status = SupplierOrderStatus.Created,
+                OrderedItems = new List<SupplierOrderIngredientItem>
+                {
+                    new SupplierOrderIngredientItem
+                    {
+                        Name = "Ground beef meat",
+                        Quantity = 100
+                    },
+                    new SupplierOrderIngredientItem
+                    {
+                        Name = "Chili",
+                        Quantity = 100
+                    },
+                    new SupplierOrderIngredientItem
+                    {
+                        Name = "Potato",
+                        Quantity = 100
+                    },
+                }
+            };
+            _supplierOrders.Add(supplierOrder);
+
+            supplierOrder = new SupplierOrder
+            {
+                Id = Guid.NewGuid().ToString(),
+                CreatedAt = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow,
+                SupplierId = _suppliers.Last().Id,
+                Status = SupplierOrderStatus.Created,
+                OrderedItems = new List<SupplierOrderIngredientItem>
+                {
+                    new SupplierOrderIngredientItem
+                    {
+                        Name = "Cheddar",
+                        Quantity = 100
+                    },
+                    new SupplierOrderIngredientItem
+                    {
+                        Name = "Vegetable oil",
+                        Quantity = 100
+                    },
+                    new SupplierOrderIngredientItem
+                    {
+                        Name = "Bacon",
+                        Quantity = 100
+                    },
+                }
+            };
+            _supplierOrders.Add(supplierOrder);
+
+            foreach (var toAdd in _supplierOrders)
+            {
+                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
+            }
+
+            Console.WriteLine($"{Constants.SupplierOrdersCollectionName} table and data seeded.");
         }
     }
 }
