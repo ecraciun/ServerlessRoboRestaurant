@@ -23,7 +23,7 @@ namespace BackofficeAPI
             var cosmosDbKey = System.Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
             var repo = stockIngredientsRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.StockCollectionName);
 
-            var result = await repo.GetAll();
+            var result = await repo.GetAllAsync();
 
             return new JsonResult(result);
         }

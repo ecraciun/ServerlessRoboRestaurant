@@ -11,5 +11,6 @@ namespace Core.Entities
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }
         public DateTime LastModifiedUtc { get; set; }
+        public string OrchestaratorId { get; set; }
     }
 }

@@ -37,7 +37,7 @@ namespace ClientAPI.Tests
         public PlaceOrderTests()
         {
             _repoMock = new Mock<IBaseRepository<Order>>();
-            _repoMock.Setup(x => x.Add(It.IsAny<Order>())).Returns(Task.FromResult(_dummyOrder.Id));
+            _repoMock.Setup(x => x.AddAsync(It.IsAny<Order>())).Returns(Task.FromResult(_dummyOrder.Id));
 
             _repoFactoryMock = new Mock<IBaseRepositoryFactory<Order>>();
             _repoFactoryMock.Setup(x => x.GetInstance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))

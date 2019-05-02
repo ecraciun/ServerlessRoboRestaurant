@@ -51,7 +51,7 @@ namespace Core.Tests.Services
                 new CosmosDbBaseRepository<EntityBase>(_mockDocumentClient.Object, "abc");
 
             var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                target.Delete(null));
+                target.DeleteAsync(null));
             Assert.NotNull(ex);
         }
 
@@ -62,7 +62,7 @@ namespace Core.Tests.Services
                 new CosmosDbBaseRepository<EntityBase>(_mockDocumentClient.Object, "abc");
 
             var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                target.Get(null));
+                target.GetAsync(null));
             Assert.NotNull(ex);
         }
 
@@ -73,7 +73,7 @@ namespace Core.Tests.Services
                 new CosmosDbBaseRepository<EntityBase>(_mockDocumentClient.Object, "abc");
 
             var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                target.Upsert(null));
+                target.UpsertAsync(null));
             Assert.NotNull(ex);
         }
 
@@ -84,7 +84,7 @@ namespace Core.Tests.Services
                 new CosmosDbBaseRepository<EntityBase>(_mockDocumentClient.Object, "abc");
 
             var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                target.Upsert(new EntityBase()));
+                target.UpsertAsync(new EntityBase()));
             Assert.NotNull(ex);
         }
     }

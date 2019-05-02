@@ -24,7 +24,7 @@ namespace Core.Services
             _collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, _collectionId);
         }
 
-        public async Task<string> Add(T entity)
+        public async Task<string> AddAsync(T entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             if (string.IsNullOrEmpty(entity.Id))
@@ -37,7 +37,7 @@ namespace Core.Services
             
         }
 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
@@ -55,7 +55,7 @@ namespace Core.Services
             }
         }
 
-        public async Task<T> Get(string id)
+        public async Task<T> GetAsync(string id)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
@@ -70,7 +70,7 @@ namespace Core.Services
             }
         }
 
-        public async Task<IList<T>> GetAll()
+        public async Task<IList<T>> GetAllAsync()
         {
             List<T> result = new List<T>();
 
@@ -90,7 +90,7 @@ namespace Core.Services
             return result;
         }
 
-        public async Task<IList<T>> GetWhere(Expression<Func<T, bool>> predicate)
+        public async Task<IList<T>> Async(Expression<Func<T, bool>> predicate)
         {
             List<T> result = new List<T>();
 
@@ -111,7 +111,7 @@ namespace Core.Services
             return result;
         }
 
-        public async Task Upsert(T entity)
+        public async Task UpsertAsync(T entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             if (string.IsNullOrEmpty(entity.Id)) throw new ArgumentNullException(nameof(entity.Id));

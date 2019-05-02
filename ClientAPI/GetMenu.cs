@@ -29,12 +29,12 @@ namespace ClientAPI
             IList<Dish> result = null;
             if (string.IsNullOrEmpty(type))
             {
-                result = await repo.GetAll();
+                result = await repo.GetAllAsync();
             }
             if (Enum.TryParse(type, out DishType dishType) &&
                 Enum.IsDefined(typeof(DishType), dishType))
             {
-                result = await repo.GetWhere(x => x.Type == dishType);
+                result = await repo.Async(x => x.Type == dishType);
             }
 
             return new JsonResult(result);

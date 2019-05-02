@@ -22,7 +22,7 @@ namespace BackofficeAPI.Tests
             CreateTestData();
 
             _repoMock = new Mock<IBaseRepository<StockIngredient>>();
-            _repoMock.Setup(x => x.GetAll()).Returns(Task.FromResult(_stockIngredients));
+            _repoMock.Setup(x => x.GetAllAsync()).Returns(Task.FromResult(_stockIngredients));
 
             _repoFactoryMock = new Mock<IBaseRepositoryFactory<StockIngredient>>();
             _repoFactoryMock.Setup(x => x.GetInstance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))

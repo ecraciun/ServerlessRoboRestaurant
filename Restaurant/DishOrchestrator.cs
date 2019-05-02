@@ -14,8 +14,16 @@ namespace Restaurant
         public static async Task<List<string>> RunOrchestrator(
             [OrchestrationTrigger] DurableOrchestrationContext context)
         {
-            var outputs = new List<string>();
+            // mark in progress
 
+            // check inventory
+
+            // prepare
+
+            // deliver
+
+            var outputs = new List<string>();
+            
             // Replace "hello" with the name of your Durable Activity Function.
             outputs.Add(await context.CallActivityAsync<string>("DishOrchestrator_Hello", "Tokyo"));
             outputs.Add(await context.CallActivityAsync<string>("DishOrchestrator_Hello", "Seattle"));

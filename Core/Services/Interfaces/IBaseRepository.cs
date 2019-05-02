@@ -8,11 +8,11 @@ namespace Core.Services.Interfaces
 {
     public interface IBaseRepository<T> where T : EntityBase, new ()
     {
-        Task<IList<T>> GetAll();
-        Task<T> Get(string id);
-        Task<string> Add(T entity);
-        Task Delete(string id);
-        Task Upsert(T entity);
-        Task<IList<T>> GetWhere(Expression<Func<T, bool>> predicate);
+        Task<IList<T>> GetAllAsync();
+        Task<T> GetAsync(string id);
+        Task<string> AddAsync(T entity);
+        Task DeleteAsync(string id);
+        Task UpsertAsync(T entity);
+        Task<IList<T>> Async(Expression<Func<T, bool>> predicate);
     }
 }

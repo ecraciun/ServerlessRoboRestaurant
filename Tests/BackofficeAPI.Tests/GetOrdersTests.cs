@@ -25,8 +25,8 @@ namespace BackofficeAPI.Tests
             CreateTestData();
 
             _repoMock = new Mock<IBaseRepository<Order>>();
-            _repoMock.Setup(x => x.GetAll()).Returns(Task.FromResult(_orders));
-            _repoMock.Setup(x => x.GetWhere(It.IsAny<Expression<Func<Order, bool>>>()))
+            _repoMock.Setup(x => x.GetAllAsync()).Returns(Task.FromResult(_orders));
+            _repoMock.Setup(x => x.Async(It.IsAny<Expression<Func<Order, bool>>>()))
                 .Returns(Task.FromResult(_orders.Take(1).ToList() as IList<Order>));
 
             _repoFactoryMock = new Mock<IBaseRepositoryFactory<Order>>();

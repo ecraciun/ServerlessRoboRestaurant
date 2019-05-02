@@ -29,12 +29,12 @@ namespace BackofficeAPI
             IList<SupplierOrder> result = null;
             if (string.IsNullOrEmpty(status))
             {
-                result = await repo.GetAll();
+                result = await repo.GetAllAsync();
             }
             if (Enum.TryParse(status, out SupplierOrderStatus orderStatus) &&
                 Enum.IsDefined(typeof(SupplierOrderStatus), orderStatus))
             {
-                result = await repo.GetWhere(x => x.Status == orderStatus);
+                result = await repo.Async(x => x.Status == orderStatus);
             }
 
             return new JsonResult(result);

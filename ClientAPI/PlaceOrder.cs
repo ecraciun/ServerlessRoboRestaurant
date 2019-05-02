@@ -39,7 +39,7 @@ namespace ClientAPI
                     var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
                     var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                     var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
-                    var id = await repo.Add(order);
+                    var id = await repo.AddAsync(order);
                     return new CreatedResult($"api/{nameof(GetOrderStatus)}/{id}", null);
                 }
                 catch (Exception ex) when (ex is JsonReaderException || ex is JsonSerializationException)

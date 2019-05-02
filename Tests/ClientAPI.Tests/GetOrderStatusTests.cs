@@ -27,7 +27,7 @@ namespace ClientAPI.Tests
         public GetOrderStatusTests()
         {
             _repoMock = new Mock<IBaseRepository<Order>>();
-            _repoMock.Setup(x => x.Get(It.IsAny<string>())).Returns(Task.FromResult(_dummyOrder));
+            _repoMock.Setup(x => x.GetAsync(It.IsAny<string>())).Returns(Task.FromResult(_dummyOrder));
 
             _repoFactoryMock = new Mock<IBaseRepositoryFactory<Order>>();
             _repoFactoryMock.Setup(x => x.GetInstance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))

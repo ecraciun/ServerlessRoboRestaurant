@@ -26,7 +26,7 @@ namespace ClientAPI
                 var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
                 var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                 var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
-                var result = await repo.Get(orderId);
+                var result = await repo.GetAsync(orderId);
                 if (result == null) return new NotFoundResult();
                 return new JsonResult(result.Status);
             }
