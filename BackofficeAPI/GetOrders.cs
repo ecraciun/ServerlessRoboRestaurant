@@ -15,7 +15,7 @@ namespace BackofficeAPI
 {
     public static class GetOrders
     {
-        [FunctionName("GetOrders")]
+        [FunctionName(Constants.GetOrdersFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,

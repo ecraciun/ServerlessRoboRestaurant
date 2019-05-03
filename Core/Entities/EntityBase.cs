@@ -8,5 +8,8 @@ namespace Core.Entities
     {
         [JsonProperty("id")]
         public string Id { get; set; }
+
+        [JsonProperty("_etag")]
+        public string ETag { get; set; }
     }
 }

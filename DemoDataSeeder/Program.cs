@@ -26,17 +26,31 @@ namespace DemoDataSeeder
 
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Creating tables and seeding data...");
+            Console.WriteLine("Creating collections and seeding data...");
             _documentClient = new DocumentClient(new Uri(Endpoint), Key);
 
             await EnsureDatabase();
+
+            await RemoveCollections();
+            
             await EnsureAndSeedStock();
             await EnsureAndSeedDishes();
             await EnsureAndSeedOrders();
             await EnsureAndSeedSuppliers();
             await EnsureAndSeedSupplierOrders();
 
-            Console.WriteLine("Tables and data created.");
+            Console.WriteLine("Collections and data created.");
+        }
+
+        private static async Task RemoveCollections()
+        {
+            Console.WriteLine("Removing all collections...");
+            await _documentClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.StockCollectionName));
+            await _documentClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.DishesCollectionName));
+            await _documentClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.OrdersCollectionName));
+            await _documentClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.SuppliersCollectionName));
+            await _documentClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.SupplierOrdersCollectionName));
+            Console.WriteLine("Collections removed.");
         }
 
         private static async Task EnsureDatabase()
@@ -46,7 +60,7 @@ namespace DemoDataSeeder
 
         private static async Task EnsureAndSeedStock()
         {
-            Console.WriteLine($"Ensuring {Constants.StockCollectionName} table and data...");
+            Console.WriteLine($"Ensuring {Constants.StockCollectionName} collection and data...");
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.StockCollectionName },
                 new RequestOptions { OfferThroughput = CollectionThroughput });
@@ -185,12 +199,12 @@ namespace DemoDataSeeder
                 await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
-            Console.WriteLine($"{Constants.StockCollectionName} table and data seeded.");
+            Console.WriteLine($"{Constants.StockCollectionName} collection and data seeded.");
         }
 
         private static async Task EnsureAndSeedDishes()
         {
-            Console.WriteLine($"Ensuring {Constants.DishesCollectionName} table and data...");
+            Console.WriteLine($"Ensuring {Constants.DishesCollectionName} collection and data...");
 
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.DishesCollectionName },
@@ -410,12 +424,12 @@ namespace DemoDataSeeder
                 await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
-            Console.WriteLine($"{Constants.DishesCollectionName} table and data seeded.");
+            Console.WriteLine($"{Constants.DishesCollectionName} collection and data seeded.");
         }
 
         private static async Task EnsureAndSeedOrders()
         {
-            Console.WriteLine($"Ensuring {Constants.OrdersCollectionName} table and data...");
+            Console.WriteLine($"Ensuring {Constants.OrdersCollectionName} collection and data...");
 
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.OrdersCollectionName },
@@ -441,6 +455,7 @@ namespace DemoDataSeeder
                     }
                 }
             };
+            order.LastModifiedUtc = order.TimePlacedUtc;
             _orders.Add(order);
             order = new Order
             {
@@ -461,6 +476,7 @@ namespace DemoDataSeeder
                     }
                 }
             };
+            order.LastModifiedUtc = order.TimePlacedUtc;
             _orders.Add(order);
             order = new Order
             {
@@ -476,6 +492,7 @@ namespace DemoDataSeeder
                     }
                 }
             };
+            order.LastModifiedUtc = order.TimePlacedUtc;
             _orders.Add(order);
 
             foreach (var toAdd in _orders)
@@ -483,12 +500,12 @@ namespace DemoDataSeeder
                 await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
-            Console.WriteLine($"{Constants.OrdersCollectionName} table and data seeded.");
+            Console.WriteLine($"{Constants.OrdersCollectionName} collection and data seeded.");
         }
 
         private static async Task EnsureAndSeedSuppliers()
         {
-            Console.WriteLine($"Ensuring {Constants.SuppliersCollectionName} table and data...");
+            Console.WriteLine($"Ensuring {Constants.SuppliersCollectionName} collection and data...");
 
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.SuppliersCollectionName },
@@ -622,12 +639,12 @@ namespace DemoDataSeeder
                 await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
-            Console.WriteLine($"{Constants.SuppliersCollectionName} table and data seeded.");
+            Console.WriteLine($"{Constants.SuppliersCollectionName} collection and data seeded.");
         }
 
         private static async Task EnsureAndSeedSupplierOrders()
         {
-            Console.WriteLine($"Ensuring {Constants.SupplierOrdersCollectionName} table and data...");
+            Console.WriteLine($"Ensuring {Constants.SupplierOrdersCollectionName} collection and data...");
 
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.SupplierOrdersCollectionName },
@@ -695,7 +712,7 @@ namespace DemoDataSeeder
                 await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
             }
 
-            Console.WriteLine($"{Constants.SupplierOrdersCollectionName} table and data seeded.");
+            Console.WriteLine($"{Constants.SupplierOrdersCollectionName} collection and data seeded.");
         }
     }
 }

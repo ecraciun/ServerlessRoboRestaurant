@@ -14,7 +14,7 @@ namespace ClientAPI
 {
     public static class GetOrderStatus
     {
-        [FunctionName("GetOrderStatus")]
+        [FunctionName(Constants.GetOrderStatusFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,

@@ -11,7 +11,7 @@ namespace Restaurant
 {
     public static class HandleOrderActivity
     {
-        [FunctionName("HandleOrder")]
+        [FunctionName(Constants.HandleOrderActivityFunctionName)]
         public static async Task<bool> Run(
             [ActivityTrigger]OrderDTO order,
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,

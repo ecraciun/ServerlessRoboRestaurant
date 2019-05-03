@@ -13,7 +13,7 @@ namespace BackofficeAPI
 {
     public static class GetStockIngredients
     {
-        [FunctionName("GetStockIngredients")]
+        [FunctionName(Constants.GetStockIngredientsFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             [Inject]IBaseRepositoryFactory<StockIngredient> stockIngredientsRepositoryFactory,

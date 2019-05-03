@@ -15,7 +15,7 @@ namespace ClientAPI
 {
     public static class GetMenu
     {
-        [FunctionName("GetMenu")]
+        [FunctionName(Constants.GetMenuFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log,

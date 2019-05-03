@@ -7,12 +7,13 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Core;
 
 namespace Restaurant
 {
     public static class SupplierFinderActivity
     {
-        [FunctionName("SupplierFinder")]
+        [FunctionName(Constants.SupplierFinderActivityFunctionName)]
         public static async Task<bool> Run(
             [ActivityTrigger]string orderId,
             ILogger log)

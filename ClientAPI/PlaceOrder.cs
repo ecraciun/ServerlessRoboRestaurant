@@ -17,7 +17,7 @@ namespace ClientAPI
 {
     public static class PlaceOrder
     {
-        [FunctionName("PlaceOrder")]
+        [FunctionName(Constants.PlaceOrderFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,

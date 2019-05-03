@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Core;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -10,7 +11,7 @@ namespace Restaurant
 {
     public static class DishOrchestrator
     {
-        [FunctionName("DishOrchestrator")]
+        [FunctionName(Constants.DishOrchestratorFunctionName)]
         public static async Task<List<string>> RunOrchestrator(
             [OrchestrationTrigger] DurableOrchestrationContext context)
         {
