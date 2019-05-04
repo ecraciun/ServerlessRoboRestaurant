@@ -27,7 +27,8 @@ namespace Core
         public const string CheckStockActivityFunctionName              = "CheckStock";
         public const string CreateSupplierOrderActivityFunctionName     = "CreateSupplierOrder";
         public const string DishOrchestratorFunctionName                = "DishOrchestrator";
-        public const string DishStepActivityFunctionName                = "DishStep";
+        public const string RecipeStepActivityFunctionName              = "RecipeStep";
+        public const string GetDishActivityFunctionName                 = "GetDish";
         public const string UpdateOrderActivityFunctionName             = "UpdateOrder";
         public const string OrderListenerFunctionName                   = "OrderListener";
         public const string StockCheckerOrchestratorFunctionName        = "StockCheckerOrchestrator";
