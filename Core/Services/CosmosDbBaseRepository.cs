@@ -8,6 +8,7 @@ using Microsoft.Azure.Documents.Linq;
 using System.Linq.Expressions;
 using System.Linq;
 using Microsoft.Azure.Documents;
+using System.Net;
 
 namespace Core.Services
 {
@@ -117,6 +118,55 @@ namespace Core.Services
             if (string.IsNullOrEmpty(entity.Id)) throw new ArgumentNullException(nameof(entity.Id));
 
             await _documentClient.UpsertDocumentAsync(_collectionUri, entity);
+        }
+
+        public async Task<bool> UpdateAsync(T entity)
+        {
+            if (entity == null) throw new ArgumentException(nameof(entity));
+            if (string.IsNullOrEmpty(entity.Id)) throw new ArgumentException(nameof(entity.Id));
+            if (string.IsNullOrEmpty(entity.ETag)) throw new ArgumentException(nameof(entity.ETag));
+
+            var accessCondition = new AccessCondition()
+            {
+                Condition = entity.ETag,
+                Type = AccessConditionType.IfMatch
+            };
+
+            try
+            {
+                await _documentClient.ReplaceDocumentAsync(
+                    UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, entity.Id),
+                    entity, new RequestOptions
+                    {
+                        AccessCondition = accessCondition
+                    });
+            }
+            catch(DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> TryUpdateWithRetry(T entity, Action<T> entityUpdateAction, int retryCount = Constants.DefaultTryUpdateRetryCount)
+        {
+            if (entity == null) throw new ArgumentException(nameof(entity));
+            if(entityUpdateAction == null) throw new ArgumentException(nameof(entityUpdateAction));
+            int retries = 0;
+
+            entityUpdateAction(entity);
+            bool updateResult = await UpdateAsync(entity); ;
+
+            while (retries < retryCount && updateResult == false) 
+            {
+                retries++;
+                entity = await GetAsync(entity.Id);
+                entityUpdateAction(entity);
+                updateResult = await UpdateAsync(entity);
+            }
+
+            return updateResult;
         }
     }
 }

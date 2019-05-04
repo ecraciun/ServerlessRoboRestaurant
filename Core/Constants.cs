@@ -28,10 +28,14 @@ namespace Core
         public const string CreateSupplierOrderActivityFunctionName     = "CreateSupplierOrder";
         public const string DishOrchestratorFunctionName                = "DishOrchestrator";
         public const string DishStepActivityFunctionName                = "DishStep";
-        public const string HandleOrderActivityFunctionName             = "HandleOrder";
+        public const string UpdateOrderActivityFunctionName             = "UpdateOrder";
         public const string OrderListenerFunctionName                   = "OrderListener";
         public const string StockCheckerOrchestratorFunctionName        = "StockCheckerOrchestrator";
         public const string SupplierFinderActivityFunctionName          = "SupplierFinder";
+        public const string UpdateStockActivityFunctionName             = "UpdateStock";
+
         //public const string FunctionName = "";
+
+        public const int DefaultTryUpdateRetryCount                     = 10;
     }
 }

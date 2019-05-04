@@ -9,9 +9,9 @@ using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
 namespace Restaurant
 {
-    public static class HandleOrderActivity
+    public static class UpdateOrderActivity
     {
-        [FunctionName(Constants.HandleOrderActivityFunctionName)]
+        [FunctionName(Constants.UpdateOrderActivityFunctionName)]
         public static async Task<bool> Run(
             [ActivityTrigger]OrderDTO order,
             [Inject]IBaseRepositoryFactory<Order> ordersRepositoryFactory,
@@ -33,10 +33,12 @@ namespace Restaurant
                     orderEntity.Status != order.OrderStatus
                 )
                 {
-                    orderEntity.OrchestaratorId = order.OrchestratorId;
-                    orderEntity.Status = order.OrderStatus;
-                    await repo.UpsertAsync(orderEntity);
-                    return true;
+                    return await repo.TryUpdateWithRetry(orderEntity, (o) =>
+                    {
+                        o.OrchestaratorId = order.OrchestratorId;
+                        o.LastModifiedUtc = DateTime.UtcNow;
+                        o.Status = order.OrderStatus;
+                    });
                 }
             }
 
