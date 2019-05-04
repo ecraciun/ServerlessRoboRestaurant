@@ -13,7 +13,7 @@ namespace Core.Services.Interfaces
         Task<string> AddAsync(T entity);
         Task DeleteAsync(string id);
         Task UpsertAsync(T entity);
-        Task<IList<T>> Async(Expression<Func<T, bool>> predicate);
+        Task<IList<T>> GetWhereAsync(Expression<Func<T, bool>> predicate);
         Task<bool> UpdateAsync(T entity);
         Task<bool> TryUpdateWithRetry(T entity, Action<T> entityUpdateAction, int retryCount = Constants.DefaultTryUpdateRetryCount);
     }

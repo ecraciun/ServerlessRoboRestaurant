@@ -91,7 +91,7 @@ namespace Core.Services
             return result;
         }
 
-        public async Task<IList<T>> Async(Expression<Func<T, bool>> predicate)
+        public async Task<IList<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
         {
             List<T> result = new List<T>();
 
