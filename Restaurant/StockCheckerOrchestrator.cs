@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Core;
+using Core.Entities;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -12,25 +14,63 @@ namespace Restaurant
     public static class StockCheckerOrchestrator
     {
         [FunctionName(Constants.StockCheckerOrchestratorFunctionName)]
-        public static async Task<List<string>> RunOrchestrator(
+        public static async Task<bool> RunOrchestrator(
             [OrchestrationTrigger] DurableOrchestrationContext context)
         {
-            var outputs = new List<string>();
+            var neededIngredients = context.GetInput<List<DishIngredient>>();
+            var checkTasks = new List<Task<(bool Reserved, string IngredientName)>>();
 
-            // Replace "hello" with the name of your Durable Activity Function.
-            outputs.Add(await context.CallActivityAsync<string>("StockCheckerOrchestrator_Hello", "Tokyo"));
-            outputs.Add(await context.CallActivityAsync<string>("StockCheckerOrchestrator_Hello", "Seattle"));
-            outputs.Add(await context.CallActivityAsync<string>("StockCheckerOrchestrator_Hello", "London"));
+            foreach(var ingredient in neededIngredients)
+            {
+                checkTasks
+                    .Add(context.CallActivityAsync<(bool Reserved, string IngredientName)>(Constants.CheckAndReserveStockActivityFunctionName, ingredient));
+            }
 
-            // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
-            return outputs;
-        }
+            var checkResult = await Task.WhenAll(checkTasks);
+            var ingredientsToOrder = checkResult.Where(x => x.Reserved == false).Select(x => x.IngredientName).ToList();
 
-        [FunctionName("StockCheckerOrchestrator_Hello")]
-        public static string SayHello([ActivityTrigger] string name, ILogger log)
-        {
-            log.LogInformation($"Saying hello to {name}.");
-            return $"Hello {name}!";
+            if (ingredientsToOrder.Any())
+            {
+                var supplierQueryTasks = new List<Task<SupplierQueryResponse>>();
+
+                foreach(var ingredient in ingredientsToOrder)
+                {
+                    supplierQueryTasks.Add(context.CallActivityAsync<SupplierQueryResponse>(Constants.SupplierFinderActivityFunctionName,
+                        new SupplierQueryRequest
+                        {
+                            IngredientName = ingredient,
+                            QueryStrategy = SupplierQueryStrategy.OptimizeDelivery
+                        }));
+                }
+
+                var supplierQueryResponses = await Task.WhenAll(supplierQueryTasks);
+                var groupdResults = supplierQueryResponses.GroupBy(x => x.SupplierId).ToList();
+
+                var supplierOrderTasks = new List<Task>();
+                foreach(var group in groupdResults)
+                {
+                    var supplierOrder = new SupplierOrder
+                    {
+                        SupplierId = group.Key,
+                        OrderedItems = group.Select(x =>
+                        {
+                            return new SupplierOrderIngredientItem
+                            {
+                                Name = x.IngredientName,
+                                Quantity = Constants.DefaultUrgentIngredientOrderQuantity
+                            };
+                        }).ToList()
+                    };
+
+                    supplierOrderTasks.Add(await context.CallActivityAsync(Constants.CreateSupplierOrderActivityFunctionName,));
+                }
+
+                await Task.WhenAll(supplierOrderTasks);
+
+                // check and reserve
+            }
+
+            return true;
         }
 
         [FunctionName("StockCheckerOrchestrator_HttpStart")]

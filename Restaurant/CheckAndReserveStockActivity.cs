@@ -11,9 +11,9 @@ using Core;
 
 namespace Restaurant
 {
-    public static class CheckStockActivity
+    public static class CheckAndReserveStockActivity
     {
-        [FunctionName(Constants.CheckStockActivityFunctionName)]
+        [FunctionName(Constants.CheckAndReserveStockActivityFunctionName)]
         public static async Task<bool> Run(
             [ActivityTrigger]string orderId,
             ILogger log)

@@ -19,14 +19,7 @@ namespace Restaurant
             var order = context.GetInput<Order>();
 
             // Replace "hello" with the name of your Durable Activity Function.
-            await context.CallActivityAsync<string>("OrderOrchestrator_Hello", "London")
-        }
-
-        [FunctionName("OrderOrchestrator_Hello")]
-        public static string SayHello([ActivityTrigger] string name, ILogger log)
-        {
-            log.LogInformation($"Saying hello to {name}.");
-            return $"Hello {name}!";
+            await context.CallActivityAsync<string>("OrderOrchestrator_Hello", "London");
         }
     }
 }

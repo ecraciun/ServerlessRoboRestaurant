@@ -24,7 +24,7 @@ namespace Core
         public const string GetSupplierOrdersFunctionName               = "GetSupplierOrders";
         public const string GetStockIngredientsFunctionName             = "GetStockIngredients";
         public const string GetOrdersFunctionName                       = "GetOrders";
-        public const string CheckStockActivityFunctionName              = "CheckStock";
+        public const string CheckAndReserveStockActivityFunctionName    = "CheckAndReserveStock";
         public const string CreateSupplierOrderActivityFunctionName     = "CreateSupplierOrder";
         public const string DishOrchestratorFunctionName                = "DishOrchestrator";
         public const string RecipeStepActivityFunctionName              = "RecipeStep";
@@ -38,5 +38,8 @@ namespace Core
         //public const string FunctionName = "";
 
         public const int DefaultTryUpdateRetryCount                     = 10;
+
+        public const int DefaultUrgentIngredientOrderQuantity           = 50;
+        public const int DefaultRegularIngredientOrderQuantity          = 100;
     }
 }

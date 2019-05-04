@@ -5,5 +5,6 @@
         public string SupplierId { get; set; }
         public decimal UnitPrice { get; set; }
         public int TimeToDelivery { get; set; }
+        public string IngredientName { get; set; }
     }
 }
