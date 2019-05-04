@@ -12,5 +12,6 @@ namespace Core.Entities
         public DateTime LastModified { get; set; }
         public SupplierOrderStatus Status { get; set; }
         public List<SupplierOrderIngredientItem> OrderedItems { get; set; }
+        public int DeliveryETAInSeconds { get; set; }
     }
 }
