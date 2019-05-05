@@ -25,9 +25,9 @@ namespace Restaurant
 
             while (ingredientsToOrder.Any())
             {
-                var groupdResults = await GetNeededSuppliers(context, ingredientsToOrder);
+                var groupedSupplierResults = await GetNeededSuppliers(context, ingredientsToOrder);
 
-                await CreateSupplierOrders(context, groupdResults);
+                await CreateSupplierOrders(context, groupedSupplierResults);
 
                 var leftOverNeededIngredients = neededIngredients
                     .Where(x => ingredientsToOrder.Contains(x.Name)).ToList();
@@ -81,8 +81,8 @@ namespace Restaurant
             }
 
             var supplierQueryResponses = await Task.WhenAll(supplierQueryTasks);
-            var groupdResults = supplierQueryResponses.GroupBy(x => x.SupplierId).ToList();
-            return groupdResults;
+            var groupedResults = supplierQueryResponses.GroupBy(x => x.SupplierId).ToList();
+            return groupedResults;
         }
 
         private static async Task<List<string>> HandleNeededStock(DurableOrchestrationContext context,

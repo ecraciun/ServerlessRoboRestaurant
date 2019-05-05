@@ -22,6 +22,8 @@ namespace Restaurant
             [OrchestrationClient] DurableOrchestrationClient starter,
             ILogger log)
         {
+            await EnsureInventoryCheckerIsRunning(starter);
+
             foreach(var document in inputDocuments)
             {
                 var order = JsonConvert.DeserializeObject<Order>(document.ToString()); // or (Order)(dynamic)document;
@@ -33,6 +35,18 @@ namespace Restaurant
 
                     log.LogInformation($"Order {order.Id} was picked up by {instanceId}");
                 }
+            }
+        }
+
+        private static async Task EnsureInventoryCheckerIsRunning(DurableOrchestrationClient starter)
+        {
+            // Check if an instance with the specified ID already exists.
+            var existingInstance = await starter.GetStatusAsync(Constants.InventoryCheckerOrchestratorId);
+            if (existingInstance == null)
+            {
+                // An instance with the specified ID doesn't exist, create one.
+                await starter.StartNewAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName,
+                    Constants.InventoryCheckerOrchestratorId, null);
             }
         }
     }
