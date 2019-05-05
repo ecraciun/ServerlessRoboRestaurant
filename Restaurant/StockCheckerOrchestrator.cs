@@ -32,10 +32,29 @@ namespace Restaurant
                 var leftOverNeededIngredients = neededIngredients
                     .Where(x => ingredientsToOrder.Contains(x.Name)).ToList();
 
+                var currentStockIngredients = await context.CallActivityAsync<IList<StockIngredient>>(
+                Constants.GetStockActivityFunctionName, null);
+
+                await UpdateStockQuantities(context,
+                    currentStockIngredients.Where(x => ingredientsToOrder.Contains(x.Name)).ToList());
+
                 ingredientsToOrder = await HandleNeededStock(context, leftOverNeededIngredients);
             }
 
             return true;
+        }
+
+        private static async Task UpdateStockQuantities(DurableOrchestrationContext context,
+            List<StockIngredient> ingredientsThatNeedReplenishing)
+        {
+            var updateStockTasks = new List<Task<bool>>();
+            foreach (var ingredient in ingredientsThatNeedReplenishing)
+            {
+                updateStockTasks.Add(context.CallActivityAsync<bool>(
+                    Constants.UpdateStockActivityFunctionName,
+                    (ingredient.Id, Constants.DefaultUrgentIngredientOrderQuantity)));
+            }
+            await Task.WhenAll(updateStockTasks);
         }
 
         private static async Task CreateSupplierOrders(DurableOrchestrationContext context,

@@ -19,21 +19,42 @@ namespace Restaurant
         public static async Task RunOrchestrator(
             [OrchestrationTrigger] DurableOrchestrationContext context)
         {
+            context.SetCustomStatus("Starting new run");
             var currentStockIngredients = await context.CallActivityAsync<IList<StockIngredient>>(
                 Constants.GetStockActivityFunctionName, null);
 
             var ingredientsThatNeedReplenishing = currentStockIngredients
                 .Where(x => x.StockQuantity < Constants.RegularInventoryCheckMinimumThreshold).ToList();
 
+            context.SetCustomStatus("Finding appropriate suppliers");
             var groupedSupplierResults = await GetNeededSuppliers(context,
                 ingredientsThatNeedReplenishing.Select(x => x.Name).ToList());
 
+            context.SetCustomStatus("Creating and waiting for supplier orders");
             await CreateSupplierOrders(context, groupedSupplierResults);
 
+            context.SetCustomStatus("Updating stock");
+            await UpdateStockQuantities(context, ingredientsThatNeedReplenishing);
+
+            context.SetCustomStatus("Sleeping");
             DateTime nextCheck = context.CurrentUtcDateTime.AddSeconds(Constants.RegularInventoryCheckSleepTimeInSeconds);
             await context.CreateTimer(nextCheck, CancellationToken.None);
 
             context.ContinueAsNew(null);
+        }
+
+        // TODO: copy pasta not nice!
+        private static async Task UpdateStockQuantities(DurableOrchestrationContext context, 
+            List<StockIngredient> ingredientsThatNeedReplenishing)
+        {
+            var updateStockTasks = new List<Task<bool>>();
+            foreach(var ingredient in ingredientsThatNeedReplenishing)
+            {
+                updateStockTasks.Add(context.CallActivityAsync<bool>(
+                    Constants.UpdateStockActivityFunctionName, 
+                    (ingredient.Id, Constants.DefaultRegularIngredientOrderQuantity)));
+            }
+            await Task.WhenAll(updateStockTasks);
         }
 
         // TODO: copy pasta not nice!
