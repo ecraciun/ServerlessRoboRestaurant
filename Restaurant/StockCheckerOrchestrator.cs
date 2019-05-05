@@ -1,9 +1,12 @@
 using Core;
 using Core.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -101,18 +104,29 @@ namespace Restaurant
             return ingredientsToOrder;
         }
 
+#if DEBUG
+
         [FunctionName("StockCheckerOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestMessage req,
             [OrchestrationClient]DurableOrchestrationClient starter,
             ILogger log)
         {
-            // Function input comes from the request content.
-            string instanceId = await starter.StartNewAsync("StockCheckerOrchestrator", null);
+            string requestBody = await req.Content.ReadAsStringAsync();
+            if (!string.IsNullOrEmpty(requestBody))
+            {
+                var ingredients = JsonConvert.DeserializeObject<List<DishIngredient>>(requestBody);
+                // Function input comes from the request content.
+                string instanceId = await starter.StartNewAsync(Constants.StockCheckerOrchestratorFunctionName, ingredients);
 
-            log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+                return starter.CreateCheckStatusResponse(req, instanceId);
+            }
 
-            return starter.CreateCheckStatusResponse(req, instanceId);
+            return new HttpResponseMessage
+            {
+                StatusCode = System.Net.HttpStatusCode.BadRequest
+            };
         }
+#endif
     }
 }
