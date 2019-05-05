@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Core;
 using Core.Entities;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Restaurant
 {
@@ -20,7 +15,7 @@ namespace Restaurant
         {
             var order = context.GetInput<Order>();
 
-            if( order != null && 
+            if (order != null &&
                 (order.OrderItems?.Any() ?? false) &&
                 order.LastModifiedUtc == order.TimePlacedUtc &&
                 order.Status == OrderStatus.New)
@@ -82,11 +77,11 @@ namespace Restaurant
             var dishes = await Task.WhenAll(getDishesTasks);
             var dishesToPrepare = new List<Dish>();
 
-            foreach(var dish in dishes)
+            foreach (var dish in dishes)
             {
                 var quantity = order.OrderItems.FirstOrDefault(x => x.DishId == dish.Id).Quantity;
-                
-                while(quantity > 0)
+
+                while (quantity > 0)
                 {
                     dishesToPrepare.Add(dish);
                     quantity--;
