@@ -34,7 +34,7 @@ namespace BackofficeAPI
             if (Enum.TryParse(status, out OrderStatus orderStatus) &&
                 Enum.IsDefined(typeof(OrderStatus), orderStatus))
             {
-                result = await repo.Async(x => x.Status == orderStatus);
+                result = await repo.GetWhereAsync(x => x.Status == orderStatus);
             }
 
             return new JsonResult(result);

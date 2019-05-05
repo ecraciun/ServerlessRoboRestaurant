@@ -26,7 +26,7 @@ namespace ClientAPI.Tests
 
             _repoMock = new Mock<IBaseRepository<Dish>>();
             _repoMock.Setup(x => x.GetAllAsync()).Returns(Task.FromResult(_menu));
-            _repoMock.Setup(x => x.Async(It.IsAny<Expression<Func<Dish, bool>>>()))
+            _repoMock.Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<Dish, bool>>>()))
                 .Returns(Task.FromResult(_menu.Take(2).ToList() as IList<Dish>));
 
             _repoFactoryMock = new Mock<IBaseRepositoryFactory<Dish>>();

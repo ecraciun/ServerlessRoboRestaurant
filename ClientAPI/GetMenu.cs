@@ -34,7 +34,7 @@ namespace ClientAPI
             if (Enum.TryParse(type, out DishType dishType) &&
                 Enum.IsDefined(typeof(DishType), dishType))
             {
-                result = await repo.Async(x => x.Type == dishType);
+                result = await repo.GetWhereAsync(x => x.Type == dishType);
             }
 
             return new JsonResult(result);
