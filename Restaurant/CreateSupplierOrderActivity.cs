@@ -31,12 +31,13 @@ namespace Restaurant
                 supplierOrder.Status = SupplierOrderStatus.Processing;
 
                 var orderId = await repo.AddAsync(supplierOrder);
-
+                
                 await Task.Delay(TimeSpan.FromSeconds(supplierOrder.DeliveryETAInSeconds));
+
+                supplierOrder = await repo.GetAsync(orderId);
 
                 await repo.TryUpdateWithRetry(supplierOrder, (order) =>
                 {
-                    order.Id = orderId;
                     order.Status = SupplierOrderStatus.Delivered;
                 });
             }

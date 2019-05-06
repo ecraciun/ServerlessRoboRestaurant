@@ -1,14 +1,14 @@
-﻿using Core.Services.Interfaces;
+﻿using Core.Entities;
+using Core.Services.Interfaces;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Azure.Documents.Client;
-using Core.Entities;
-using Microsoft.Azure.Documents.Linq;
-using System.Linq.Expressions;
 using System.Linq;
-using Microsoft.Azure.Documents;
+using System.Linq.Expressions;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Core.Services
 {
@@ -35,7 +35,7 @@ namespace Core.Services
 
             var result = await _documentClient.CreateDocumentAsync(_collectionUri, entity, disableAutomaticIdGeneration: true);
             return result.Resource.Id;
-            
+
         }
 
         public async Task DeleteAsync(string id)
@@ -46,11 +46,11 @@ namespace Core.Services
             {
                 await _documentClient.DeleteDocumentAsync(UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, id));
             }
-            catch(DocumentClientException ex) when (ex.StatusCode != System.Net.HttpStatusCode.NotFound)
+            catch (DocumentClientException ex) when (ex.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 //TODO: treat ex
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //TODO: treat ex
             }
@@ -81,7 +81,7 @@ namespace Core.Services
             {
                 while (queryable.HasMoreResults)
                 {
-                    foreach(var entity in await queryable.ExecuteNextAsync<T>())
+                    foreach (var entity in await queryable.ExecuteNextAsync<T>())
                     {
                         result.Add(entity);
                     }
@@ -141,7 +141,7 @@ namespace Core.Services
                         AccessCondition = accessCondition
                     });
             }
-            catch(DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
             {
                 return false;
             }
@@ -152,13 +152,15 @@ namespace Core.Services
         public async Task<bool> TryUpdateWithRetry(T entity, Action<T> entityUpdateAction, int retryCount = Constants.DefaultTryUpdateRetryCount)
         {
             if (entity == null) throw new ArgumentException(nameof(entity));
-            if(entityUpdateAction == null) throw new ArgumentException(nameof(entityUpdateAction));
+            if (string.IsNullOrEmpty(entity.Id)) throw new ArgumentException(nameof(entity.Id));
+            if (string.IsNullOrEmpty(entity.ETag)) throw new ArgumentException(nameof(entity.ETag));
+            if (entityUpdateAction == null) throw new ArgumentException(nameof(entityUpdateAction));
             int retries = 0;
 
             entityUpdateAction(entity);
             bool updateResult = await UpdateAsync(entity); ;
 
-            while (retries < retryCount && updateResult == false) 
+            while (retries < retryCount && updateResult == false)
             {
                 retries++;
                 entity = await GetAsync(entity.Id);

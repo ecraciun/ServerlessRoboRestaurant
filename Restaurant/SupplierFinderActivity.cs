@@ -27,7 +27,7 @@ namespace Restaurant
                 var repo = suppliersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.SuppliersCollectionName);
 
                 var potentialSuppliers = await repo.GetWhereAsync(s =>
-                    s.IngredientsForSale.Any(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)));
+                    s.IngredientsForSale.Any(i => i.Name == request.IngredientName));
 
                 if (potentialSuppliers?.Any() ?? false)
                 {
@@ -39,6 +39,7 @@ namespace Restaurant
                                 return new SupplierQueryResponse
                                 {
                                     SupplierId = x.Id,
+                                    IngredientName = request.IngredientName,
                                     TimeToDelivery = x.TimeToDelivery,
                                     UnitPrice = x.IngredientsForSale.First(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)).UnitPrice
                                 };
@@ -51,6 +52,7 @@ namespace Restaurant
                             result = new SupplierQueryResponse
                             {
                                 SupplierId = supplier.Id,
+                                IngredientName = request.IngredientName,
                                 TimeToDelivery = supplier.TimeToDelivery,
                                 UnitPrice = supplier.IngredientsForSale.First(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)).UnitPrice
                             };

@@ -89,6 +89,7 @@ namespace Restaurant
                 var supplierOrder = new SupplierOrder
                 {
                     SupplierId = group.Key,
+                    DeliveryETAInSeconds = group.First().TimeToDelivery,
                     OrderedItems = group.Select(x =>
                     {
                         return new SupplierOrderIngredientItem
@@ -114,8 +115,13 @@ namespace Restaurant
         {
             // Check if an instance with the specified ID already exists.
             var existingInstance = await starter.GetStatusAsync(Constants.InventoryCheckerOrchestratorId);
-            if (existingInstance == null)
+            if (existingInstance == null || existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Failed)
             {
+                if(existingInstance != null)
+                {
+                    await starter.PurgeInstanceHistoryAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName);
+                    //await starter.TerminateAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName, "Cleanup failed run");
+                }
                 // An instance with the specified ID doesn't exist, create one.
                 await starter.StartNewAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName,
                     Constants.InventoryCheckerOrchestratorId, null);
@@ -123,6 +129,9 @@ namespace Restaurant
             }
             else
             {
+                await starter.TerminateAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName, "Force start new");
+                await starter.PurgeInstanceHistoryAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName);
+
                 // An instance with the specified ID exists, don't create one.
                 return req.CreateErrorResponse(
                     HttpStatusCode.Conflict,

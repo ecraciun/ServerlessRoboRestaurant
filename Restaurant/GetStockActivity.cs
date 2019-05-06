@@ -14,19 +14,16 @@ namespace Restaurant
     {
         [FunctionName(Constants.GetStockActivityFunctionName)]
         public static async Task<IList<StockIngredient>> Run(
-            [ActivityTrigger]string dishId,
+            [ActivityTrigger]string trigger,
             [Inject]IBaseRepositoryFactory<StockIngredient> stockRepositoryFactory,
             ILogger log)
         {
             IList<StockIngredient> result = null;
 
-            if (!string.IsNullOrEmpty(dishId))
-            {
-                var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
-                var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
-                var repo = stockRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.StockCollectionName);
-                result = await repo.GetAllAsync();
-            }
+            var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
+            var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
+            var repo = stockRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.StockCollectionName);
+            result = await repo.GetAllAsync();
 
             return result;
         }
