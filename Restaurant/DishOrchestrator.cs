@@ -4,7 +4,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -17,9 +17,9 @@ namespace Restaurant
             [OrchestrationTrigger] DurableOrchestrationContext context)
         {
             var dish = context.GetInput<Dish>();
-            if (dish != null && dish.Recipe != null && dish.Recipe.Steps != null)
+            if (dish != null && dish.Recipe != null && dish.Recipe.Steps != null && dish.Recipe.Steps.Any())
             {
-                foreach (var step in dish.Recipe.Steps)
+                foreach (var step in dish.Recipe.Steps.OrderBy(x => x.StepOrder))
                 {
                     await context.CallActivityAsync(Constants.RecipeStepActivityFunctionName, step);
                 }
