@@ -107,6 +107,7 @@ namespace Restaurant
             await Task.WhenAll(supplierOrderTasks);
         }
 
+#if DEBUG
         [FunctionName("InventoryCheckerEternalOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]HttpRequestMessage req,
@@ -138,5 +139,6 @@ namespace Restaurant
                     $"An instance with ID '{Constants.InventoryCheckerOrchestratorId}' already exists.");
             }
         }
+#endif
     }
 }
