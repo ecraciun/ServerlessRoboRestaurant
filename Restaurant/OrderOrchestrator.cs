@@ -15,7 +15,7 @@ namespace Restaurant
     {
         [FunctionName(Constants.OrderOrchestratorFunctionName)]
         public static async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext context)
+            [OrchestrationTrigger] DurableOrchestrationContextBase context)
         {
             var order = context.GetInput<Order>();
 
@@ -43,7 +43,8 @@ namespace Restaurant
             }
         }
 
-        private static async Task<bool> UpdateOrder(DurableOrchestrationContext context, Order order, OrderStatus stauts)
+        private static async Task<bool> UpdateOrder(DurableOrchestrationContextBase context, Order order, 
+            OrderStatus stauts)
         {
             return await context.CallActivityAsync<bool>(
                 Constants.UpdateOrderActivityFunctionName,
@@ -55,7 +56,8 @@ namespace Restaurant
                 });
         }
 
-        private static async Task PrepareDishes(DurableOrchestrationContext context, List<Dish> dishesToPrepare)
+        private static async Task PrepareDishes(DurableOrchestrationContextBase context, 
+            List<Dish> dishesToPrepare)
         {
             var dishOrchestratorTasks = new List<Task<bool>>();
             foreach (var dishToPrepare in dishesToPrepare)
@@ -69,7 +71,8 @@ namespace Restaurant
             // TODO: maybe check if all were done
         }
 
-        private static async Task<List<Dish>> GetDishesToPrepare(DurableOrchestrationContext context, Order order)
+        private static async Task<List<Dish>> GetDishesToPrepare(DurableOrchestrationContextBase context, 
+            Order order)
         {
             var getDishesTasks = new List<Task<Dish>>();
             foreach (var orderedItem in order.OrderItems)
@@ -114,7 +117,7 @@ namespace Restaurant
         [FunctionName("OrderOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestMessage req,
-            [OrchestrationClient]DurableOrchestrationClient starter,
+            [OrchestrationClient]DurableOrchestrationClientBase starter,
             ILogger log)
         {
             string requestBody = await req.Content.ReadAsStringAsync();

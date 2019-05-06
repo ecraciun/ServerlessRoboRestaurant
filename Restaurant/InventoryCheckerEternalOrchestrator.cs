@@ -17,7 +17,7 @@ namespace Restaurant
     {
         [FunctionName(Constants.InventoryCheckerEternalOrchestratorFunctionName)]
         public static async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext context)
+            [OrchestrationTrigger] DurableOrchestrationContextBase context)
         {
             context.SetCustomStatus("Starting new run");
             var currentStockIngredients = await context.CallActivityAsync<IList<StockIngredient>>(
@@ -44,7 +44,7 @@ namespace Restaurant
         }
 
         // TODO: copy pasta not nice!
-        private static async Task UpdateStockQuantities(DurableOrchestrationContext context, 
+        private static async Task UpdateStockQuantities(DurableOrchestrationContextBase context, 
             List<StockIngredient> ingredientsThatNeedReplenishing)
         {
             var updateStockTasks = new List<Task<bool>>();
@@ -59,7 +59,7 @@ namespace Restaurant
 
         // TODO: copy pasta not nice!
         private static async Task<List<IGrouping<string, SupplierQueryResponse>>> GetNeededSuppliers(
-            DurableOrchestrationContext context, List<string> ingredientsToOrder)
+            DurableOrchestrationContextBase context, List<string> ingredientsToOrder)
         {
             var supplierQueryTasks = new List<Task<SupplierQueryResponse>>();
 
@@ -80,7 +80,7 @@ namespace Restaurant
         }
 
         // TODO: copy pasta not nice!
-        private static async Task CreateSupplierOrders(DurableOrchestrationContext context,
+        private static async Task CreateSupplierOrders(DurableOrchestrationContextBase context,
             List<IGrouping<string, SupplierQueryResponse>> groupdResults)
         {
             var supplierOrderTasks = new List<Task>();
@@ -111,7 +111,7 @@ namespace Restaurant
         [FunctionName("InventoryCheckerEternalOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]HttpRequestMessage req,
-            [OrchestrationClient]DurableOrchestrationClient starter,
+            [OrchestrationClient]DurableOrchestrationClientBase starter,
             ILogger log)
         {
             // Check if an instance with the specified ID already exists.

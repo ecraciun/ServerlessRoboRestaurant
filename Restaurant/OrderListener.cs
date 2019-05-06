@@ -19,7 +19,7 @@ namespace Restaurant
                 ConnectionStringSetting = Constants.CosmosDbConnectionStringKeyName,
                 LeaseCollectionName = "leases",
                 CreateLeaseCollectionIfNotExists = true)]IReadOnlyList<Document> inputDocuments,
-            [OrchestrationClient] DurableOrchestrationClient starter,
+            [OrchestrationClient] DurableOrchestrationClientBase starter,
             ILogger log)
         {
             await EnsureInventoryCheckerIsRunning(starter);
@@ -38,7 +38,8 @@ namespace Restaurant
             }
         }
 
-        private static async Task EnsureInventoryCheckerIsRunning(DurableOrchestrationClient starter)
+        // TODO: handle failed state
+        private static async Task EnsureInventoryCheckerIsRunning(DurableOrchestrationClientBase starter)
         {
             // Check if an instance with the specified ID already exists.
             var existingInstance = await starter.GetStatusAsync(Constants.InventoryCheckerOrchestratorId);

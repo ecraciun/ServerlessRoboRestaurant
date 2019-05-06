@@ -14,7 +14,7 @@ namespace Restaurant
     {
         [FunctionName(Constants.DishOrchestratorFunctionName)]
         public static async Task<bool> RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext context)
+            [OrchestrationTrigger] DurableOrchestrationContextBase context)
         {
             var dish = context.GetInput<Dish>();
             if (dish != null && dish.Recipe != null && dish.Recipe.Steps != null && dish.Recipe.Steps.Any())
@@ -34,7 +34,7 @@ namespace Restaurant
         [FunctionName("DishOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestMessage req,
-            [OrchestrationClient]DurableOrchestrationClient starter,
+            [OrchestrationClient]DurableOrchestrationClientBase starter,
             ILogger log)
         {
             string requestBody = await req.Content.ReadAsStringAsync();

@@ -17,7 +17,7 @@ namespace Restaurant
     {
         [FunctionName(Constants.StockCheckerOrchestratorFunctionName)]
         public static async Task<bool> RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext context)
+            [OrchestrationTrigger] DurableOrchestrationContextBase context)
         {
             var neededIngredients = context.GetInput<List<DishIngredient>>();
 
@@ -44,7 +44,7 @@ namespace Restaurant
             return true;
         }
 
-        private static async Task UpdateStockQuantities(DurableOrchestrationContext context,
+        private static async Task UpdateStockQuantities(DurableOrchestrationContextBase context,
             List<StockIngredient> ingredientsThatNeedReplenishing)
         {
             var updateStockTasks = new List<Task<bool>>();
@@ -57,7 +57,7 @@ namespace Restaurant
             await Task.WhenAll(updateStockTasks);
         }
 
-        private static async Task CreateSupplierOrders(DurableOrchestrationContext context,
+        private static async Task CreateSupplierOrders(DurableOrchestrationContextBase context,
             List<IGrouping<string, SupplierQueryResponse>> groupdResults)
         {
             var supplierOrderTasks = new List<Task>();
@@ -84,7 +84,7 @@ namespace Restaurant
         }
 
         private static async Task<List<IGrouping<string, SupplierQueryResponse>>> GetNeededSuppliers(
-            DurableOrchestrationContext context, List<string> ingredientsToOrder)
+            DurableOrchestrationContextBase context, List<string> ingredientsToOrder)
         {
             var supplierQueryTasks = new List<Task<SupplierQueryResponse>>();
 
@@ -104,7 +104,7 @@ namespace Restaurant
             return groupedResults;
         }
 
-        private static async Task<List<string>> HandleNeededStock(DurableOrchestrationContext context,
+        private static async Task<List<string>> HandleNeededStock(DurableOrchestrationContextBase context,
             List<DishIngredient> neededIngredients)
         {
             var checkTasks = new List<Task<(bool Reserved, string IngredientName)>>();
@@ -128,7 +128,7 @@ namespace Restaurant
         [FunctionName("StockCheckerOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestMessage req,
-            [OrchestrationClient]DurableOrchestrationClient starter,
+            [OrchestrationClient]DurableOrchestrationClientBase starter,
             ILogger log)
         {
             string requestBody = await req.Content.ReadAsStringAsync();
