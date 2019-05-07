@@ -60,7 +60,7 @@ namespace Restaurant
         private static async Task CreateSupplierOrders(DurableOrchestrationContextBase context,
             List<IGrouping<string, SupplierQueryResponse>> groupdResults)
         {
-            var supplierOrderTasks = new List<Task>();
+            var supplierOrderTasks = new List<Task<bool>>();
             foreach (var group in groupdResults)
             {
                 var supplierOrder = new SupplierOrder
@@ -77,7 +77,7 @@ namespace Restaurant
                 };
 
                 supplierOrderTasks.Add(
-                    context.CallActivityAsync(Constants.CreateSupplierOrderActivityFunctionName, supplierOrder));
+                    context.CallActivityAsync<bool>(Constants.CreateSupplierOrderActivityFunctionName, supplierOrder));
             }
 
             await Task.WhenAll(supplierOrderTasks);

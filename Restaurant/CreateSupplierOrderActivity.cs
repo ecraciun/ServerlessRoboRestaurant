@@ -13,7 +13,7 @@ namespace Restaurant
     public static class CreateSupplierOrderActivity
     {
         [FunctionName(Constants.CreateSupplierOrderActivityFunctionName)]
-        public static async Task Run(
+        public static async Task<bool> Run(
             [ActivityTrigger]SupplierOrder supplierOrder,
             [Inject]IBaseRepositoryFactory<SupplierOrder> supplierOrdersRepositoryFactory,
             ILogger log)
@@ -36,11 +36,13 @@ namespace Restaurant
 
                 supplierOrder = await repo.GetAsync(orderId);
 
-                await repo.TryUpdateWithRetry(supplierOrder, (order) =>
+                return await repo.TryUpdateWithRetry(supplierOrder, (order) =>
                 {
                     order.Status = SupplierOrderStatus.Delivered;
                 });
             }
+
+            return false;
         }
     }
 }
