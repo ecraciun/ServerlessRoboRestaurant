@@ -23,9 +23,10 @@ namespace Restaurant
             [OrchestrationClient] DurableOrchestrationClientBase starter,
             ILogger log)
         {
-            await EnsureInventoryCheckerIsRunning(starter);
+            await EnsureInventoryCheckerIsRunning(starter, Constants.InventoryCheckerOrchestratorId, Constants.InventoryCheckerEternalOrchestratorFunctionName);
+            await EnsureInventoryCheckerIsRunning(starter, Constants.SupplierOrderReceiverOrchestratorId, Constants.SupplierOrderReceiverOrchestratorFunctionName);
 
-            foreach(var document in inputDocuments)
+            foreach (var document in inputDocuments)
             {
                 var order = JsonConvert.DeserializeObject<Order>(document.ToString()); // or (Order)(dynamic)document;
                 if( order != null && 
@@ -41,15 +42,15 @@ namespace Restaurant
         }
 
         
-        private static async Task EnsureInventoryCheckerIsRunning(DurableOrchestrationClientBase starter)
+        private static async Task EnsureInventoryCheckerIsRunning(DurableOrchestrationClientBase starter, string singletonOrchestratorId, 
+            string singletonOrchestratorFunctionName)
         {
             // Check if an instance with the specified ID already exists.
-            var existingInstance = await starter.GetStatusAsync(Constants.InventoryCheckerOrchestratorId);
+            var existingInstance = await starter.GetStatusAsync(singletonOrchestratorId);
             if (existingInstance == null)
             {
                 // An instance with the specified ID doesn't exist, create one.
-                await starter.StartNewAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName,
-                    Constants.InventoryCheckerOrchestratorId, null);
+                await starter.StartNewAsync(singletonOrchestratorFunctionName, singletonOrchestratorId, null);
             }
             else
             {
@@ -57,9 +58,8 @@ namespace Restaurant
                     existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Failed ||
                     existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Terminated)
                 {
-                    await starter.PurgeInstanceHistoryAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName);
-                    await starter.StartNewAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName,
-                    Constants.InventoryCheckerOrchestratorId, null);
+                    await starter.PurgeInstanceHistoryAsync(singletonOrchestratorFunctionName);
+                    await starter.StartNewAsync(singletonOrchestratorFunctionName, singletonOrchestratorId, null);
                 }
             }
         }

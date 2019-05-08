@@ -31,6 +31,9 @@ namespace Core
         public const string UpdateStockActivityFunctionName                 = "UpdateStock";
         public const string InventoryCheckerEternalOrchestratorFunctionName = "InventoryCheckerEternalOrchestrator";
         public const string GetStockActivityFunctionName                    = "GetStock";
+        public const string SupplierOrderReceiverOrchestratorFunctionName   = "SupplierOrderReceiverOrchestrator";
+        public const string SupplierOrderMonitorOrchestratorFunctionName    = "SupplierOrderMonitorOrchestrator";
+
         //public const string FunctionName = "";
 
         // Application constants
@@ -39,7 +42,10 @@ namespace Core
         public const int DefaultRegularIngredientOrderQuantity              = 100;
         public const int RegularInventoryCheckMinimumThreshold              = 30;
         public const int RegularInventoryCheckSleepTimeInSeconds            = 60;
+        public const int DefaultSupplierOrderCheckSleepInSeconds            = 60;
+        public const int DefaultOrchestratorTimeoutInSeconds                = 180;
         public const string InventoryCheckerOrchestratorId                  = "InventoryChecker";
+        public const string SupplierOrderReceiverOrchestratorId             = "SupplierOrderReceiver";
         public const string DefaultPartitionName                            = "default";
         public const string StockCollectionName                             = "RestaurantStock";
         public const string OrdersCollectionName                            = "Orders";
