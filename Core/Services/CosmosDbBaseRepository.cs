@@ -30,7 +30,7 @@ namespace Core.Services
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             if (string.IsNullOrEmpty(entity.Id))
             {
-                entity.Id = Guid.NewGuid().ToString(); // or maybe throw an exception
+                entity.Id = Guid.NewGuid().ToString();
             }
 
             var result = await _documentClient.CreateDocumentAsync(_collectionUri, entity, disableAutomaticIdGeneration: true);
@@ -38,21 +38,18 @@ namespace Core.Services
 
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             try
             {
                 await _documentClient.DeleteDocumentAsync(UriFactory.CreateDocumentUri(Constants.DatabaseName, _collectionId, id));
+                return true;
             }
             catch (DocumentClientException ex) when (ex.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
-                //TODO: treat ex
-            }
-            catch (Exception ex)
-            {
-                //TODO: treat ex
+                return true; // well it's not there anyway
             }
         }
 
@@ -79,13 +76,7 @@ namespace Core.Services
                 _collectionUri, new FeedOptions { MaxItemCount = 100 })
                 .AsDocumentQuery())
             {
-                while (queryable.HasMoreResults)
-                {
-                    foreach (var entity in await queryable.ExecuteNextAsync<T>())
-                    {
-                        result.Add(entity);
-                    }
-                }
+                result = await GetAllResultsFromDocumentQuery(queryable);
             }
 
             return result;
@@ -93,31 +84,17 @@ namespace Core.Services
 
         public async Task<IList<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
         {
-            List<T> result = new List<T>();
+            List<T> result;
 
             using (var queryable = _documentClient.CreateDocumentQuery<T>(
                 _collectionUri, new FeedOptions { MaxItemCount = 100 })
                 .Where(predicate)
                 .AsDocumentQuery())
             {
-                while (queryable.HasMoreResults)
-                {
-                    foreach (var entity in await queryable.ExecuteNextAsync<T>())
-                    {
-                        result.Add(entity);
-                    }
-                }
+                result = await GetAllResultsFromDocumentQuery(queryable);
             }
 
             return result;
-        }
-
-        public async Task UpsertAsync(T entity)
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
-            if (string.IsNullOrEmpty(entity.Id)) throw new ArgumentNullException(nameof(entity.Id));
-
-            await _documentClient.UpsertDocumentAsync(_collectionUri, entity);
         }
 
         public async Task<bool> UpdateAsync(T entity)
@@ -169,6 +146,19 @@ namespace Core.Services
             }
 
             return updateResult;
+        }
+
+        private async Task<List<T>> GetAllResultsFromDocumentQuery(IDocumentQuery<T> queryable)
+        {
+            var result = new List<T>();
+            while (queryable.HasMoreResults)
+            {
+                foreach (var entity in await queryable.ExecuteNextAsync<T>())
+                {
+                    result.Add(entity);
+                }
+            }
+            return result;
         }
     }
 }

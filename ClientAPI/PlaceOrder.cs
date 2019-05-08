@@ -1,22 +1,29 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Core;
+using Core.Entities;
+using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Core.Entities;
-using Core.Services.Interfaces;
-using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
-using Core;
+using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
 namespace ClientAPI
 {
     public static class PlaceOrder
     {
+        /// <summary>
+        ///     Creates a new order and returns the URL to the GetOrderStatus endpoint for this current order
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="ordersRepositoryFactory"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName(Constants.PlaceOrderFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
@@ -29,13 +36,13 @@ namespace ClientAPI
                 try
                 {
                     var order = JsonConvert.DeserializeObject<Order>(requestBody);
-                    if(order.OrderItems == null || !order.OrderItems.Any())
+                    if (order.OrderItems == null || !order.OrderItems.Any())
                     {
                         return new BadRequestObjectResult("Invalid order");
                     }
                     order.LastModifiedUtc = order.TimePlacedUtc = DateTime.UtcNow;
                     order.Status = OrderStatus.New;
-                    
+
                     var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
                     var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                     var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);

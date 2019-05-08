@@ -14,6 +14,13 @@ namespace ClientAPI
 {
     public static class GetOrderStatus
     {
+        /// <summary>
+        ///     Get an order's status
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="ordersRepositoryFactory"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName(Constants.GetOrderStatusFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,

@@ -15,6 +15,13 @@ namespace BackofficeAPI
 {
     public static class GetSupplierOrders
     {
+        /// <summary>
+        ///     Gets all supplier orders, or filtered by the order status
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="supplierOrdersRepositoryFactory"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName(Constants.GetSupplierOrdersFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,

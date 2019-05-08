@@ -15,6 +15,13 @@ namespace BackofficeAPI
 {
     public static class GetOrders
     {
+        /// <summary>
+        ///     Gets all orders in the system, or filtered by their status
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="ordersRepositoryFactory"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName(Constants.GetOrdersFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,

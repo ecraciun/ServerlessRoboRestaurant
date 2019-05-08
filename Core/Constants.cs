@@ -5,18 +5,13 @@ namespace Core
     [ExcludeFromCodeCoverage]
     public static class Constants
     {
-        public const string DefaultPartitionName                            = "default";
-        public const string StockCollectionName                             = "RestaurantStock";
-        public const string OrdersCollectionName                            = "Orders";
-        public const string DishesCollectionName                            = "Menu";
-        public const string DatabaseName                                    = "RoboRestaurant";
-        public const string SupplierOrdersCollectionName                    = "SupplierOrders";
-        public const string SuppliersCollectionName                         = "Suppliers";
-
+        // Cosmos DB settings keys
         public const string CosmosDbEndpointKeyName                         = "CosmosDbEndpoint";
         public const string CosmosDbKeyKeyName                              = "CosmosDbKey";
         public const string CosmosDbConnectionStringKeyName                 = "CosmosDbConnection";
 
+
+        // Function names
         public const string OrderOrchestratorFunctionName                   = "OrderOrchestrator";
         public const string GetMenuFunctionName                             = "GetMenu";
         public const string PlaceOrderFunctionName                          = "PlaceOrder";
@@ -38,11 +33,19 @@ namespace Core
         public const string GetStockActivityFunctionName                    = "GetStock";
         //public const string FunctionName = "";
 
+        // Application constants
         public const int DefaultTryUpdateRetryCount                         = 10;
         public const int DefaultUrgentIngredientOrderQuantity               = 50;
         public const int DefaultRegularIngredientOrderQuantity              = 100;
         public const int RegularInventoryCheckMinimumThreshold              = 30;
         public const int RegularInventoryCheckSleepTimeInSeconds            = 60;
         public const string InventoryCheckerOrchestratorId                  = "InventoryChecker";
+        public const string DefaultPartitionName                            = "default";
+        public const string StockCollectionName                             = "RestaurantStock";
+        public const string OrdersCollectionName                            = "Orders";
+        public const string DishesCollectionName                            = "Menu";
+        public const string DatabaseName                                    = "RoboRestaurant";
+        public const string SupplierOrdersCollectionName                    = "SupplierOrders";
+        public const string SuppliersCollectionName                         = "Suppliers";
     }
 }

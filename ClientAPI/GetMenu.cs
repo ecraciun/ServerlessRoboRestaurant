@@ -15,6 +15,13 @@ namespace ClientAPI
 {
     public static class GetMenu
     {
+        /// <summary>
+        ///     Gets restaurant available Dish items, filtered by type
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <param name="dishesRepositoryFactory"></param>
+        /// <returns></returns>
         [FunctionName(Constants.GetMenuFunctionName)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,

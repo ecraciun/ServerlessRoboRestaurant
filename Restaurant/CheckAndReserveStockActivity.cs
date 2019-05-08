@@ -43,7 +43,8 @@ namespace Restaurant
             }
             else
             {
-                //TODO: we have a problem, log maybe?
+                log.LogWarning($"Ingredient not found in stock: {neededIngredient.StockIngredientId} ({neededIngredient.Name})");
+                throw new ArgumentException("Ingredient was not found", nameof(neededIngredient.StockIngredientId));
             }
             return (false, neededIngredient.Name);
         }

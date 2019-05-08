@@ -4,6 +4,7 @@ using Core.Services.Interfaces;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
@@ -31,34 +32,43 @@ namespace Restaurant
 
                 if (potentialSuppliers?.Any() ?? false)
                 {
-                    switch (request.QueryStrategy)
-                    {
-                        case SupplierQueryStrategy.OptimizeCost:
-                            var potentialResponses = potentialSuppliers.Select(x =>
-                            {
-                                return new SupplierQueryResponse
-                                {
-                                    SupplierId = x.Id,
-                                    IngredientName = request.IngredientName,
-                                    TimeToDelivery = x.TimeToDelivery,
-                                    UnitPrice = x.IngredientsForSale.First(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)).UnitPrice
-                                };
-                            });
-                            result = potentialResponses.FirstOrDefault(
-                                x => x.UnitPrice == potentialResponses.Min(s => s.UnitPrice));
-                            break;
-                        case SupplierQueryStrategy.OptimizeDelivery:
-                            var supplier = potentialSuppliers.FirstOrDefault(x => x.TimeToDelivery == potentialSuppliers.Min(s => s.TimeToDelivery));
-                            result = new SupplierQueryResponse
-                            {
-                                SupplierId = supplier.Id,
-                                IngredientName = request.IngredientName,
-                                TimeToDelivery = supplier.TimeToDelivery,
-                                UnitPrice = supplier.IngredientsForSale.First(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)).UnitPrice
-                            };
-                            break;
-                    }
+                    result = GetResponseBasedOnStrategy(request, potentialSuppliers);
                 }
+            }
+
+            return result;
+        }
+
+        private static SupplierQueryResponse GetResponseBasedOnStrategy(SupplierQueryRequest request, IList<Supplier> potentialSuppliers)
+        {
+            SupplierQueryResponse result = null;
+
+            switch (request.QueryStrategy)
+            {
+                case SupplierQueryStrategy.OptimizeCost:
+                    var potentialResponses = potentialSuppliers.Select(x =>
+                    {
+                        return new SupplierQueryResponse
+                        {
+                            SupplierId = x.Id,
+                            IngredientName = request.IngredientName,
+                            TimeToDelivery = x.TimeToDelivery,
+                            UnitPrice = x.IngredientsForSale.First(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)).UnitPrice
+                        };
+                    });
+                    result = potentialResponses.FirstOrDefault(
+                        x => x.UnitPrice == potentialResponses.Min(s => s.UnitPrice));
+                    break;
+                case SupplierQueryStrategy.OptimizeDelivery:
+                    var supplier = potentialSuppliers.FirstOrDefault(x => x.TimeToDelivery == potentialSuppliers.Min(s => s.TimeToDelivery));
+                    result = new SupplierQueryResponse
+                    {
+                        SupplierId = supplier.Id,
+                        IngredientName = request.IngredientName,
+                        TimeToDelivery = supplier.TimeToDelivery,
+                        UnitPrice = supplier.IngredientsForSale.First(i => i.Name.Equals(request.IngredientName, StringComparison.OrdinalIgnoreCase)).UnitPrice
+                    };
+                    break;
             }
 
             return result;

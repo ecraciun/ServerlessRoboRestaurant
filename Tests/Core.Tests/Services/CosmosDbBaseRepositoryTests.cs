@@ -65,27 +65,5 @@ namespace Core.Tests.Services
                 target.GetAsync(null));
             Assert.NotNull(ex);
         }
-
-        [Fact]
-        public async Task Upsert_Throws_When_Entity_Is_Null()
-        {
-            var target =
-                new CosmosDbBaseRepository<EntityBase>(_mockDocumentClient.Object, "abc");
-
-            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                target.UpsertAsync(null));
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
-        public async Task Upsert_Throws_When_EntityId_Is_Null()
-        {
-            var target =
-                new CosmosDbBaseRepository<EntityBase>(_mockDocumentClient.Object, "abc");
-
-            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                target.UpsertAsync(new EntityBase()));
-            Assert.NotNull(ex);
-        }
     }
 }

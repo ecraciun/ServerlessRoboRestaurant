@@ -43,7 +43,7 @@ namespace Restaurant
             context.ContinueAsNew(null);
         }
 
-        // TODO: copy pasta not nice!
+        
         private static async Task UpdateStockQuantities(DurableOrchestrationContextBase context, 
             List<StockIngredient> ingredientsThatNeedReplenishing)
         {
@@ -57,7 +57,7 @@ namespace Restaurant
             await Task.WhenAll(updateStockTasks);
         }
 
-        // TODO: copy pasta not nice!
+        
         private static async Task<List<IGrouping<string, SupplierQueryResponse>>> GetNeededSuppliers(
             DurableOrchestrationContextBase context, List<string> ingredientsToOrder)
         {
@@ -79,7 +79,7 @@ namespace Restaurant
             return groupdResults;
         }
 
-        // TODO: copy pasta not nice!
+        
         private static async Task CreateSupplierOrders(DurableOrchestrationContextBase context,
             List<IGrouping<string, SupplierQueryResponse>> groupdResults)
         {
