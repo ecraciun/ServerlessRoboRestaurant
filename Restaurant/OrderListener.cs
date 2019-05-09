@@ -58,7 +58,7 @@ namespace Restaurant
                     existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Failed ||
                     existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Terminated)
                 {
-                    await starter.PurgeInstanceHistoryAsync(singletonOrchestratorFunctionName);
+                    await starter.PurgeInstanceHistoryAsync(singletonOrchestratorId);
                     await starter.StartNewAsync(singletonOrchestratorFunctionName, singletonOrchestratorId, null);
                 }
             }

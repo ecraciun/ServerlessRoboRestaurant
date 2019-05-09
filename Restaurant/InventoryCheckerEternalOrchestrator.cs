@@ -135,8 +135,8 @@ namespace Restaurant
             }
             else
             {
-                await starter.TerminateAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName, "Force start new");
-                await starter.PurgeInstanceHistoryAsync(Constants.InventoryCheckerEternalOrchestratorFunctionName);
+                await starter.TerminateAsync(Constants.InventoryCheckerOrchestratorId, "Force start new");
+                await starter.PurgeInstanceHistoryAsync(Constants.InventoryCheckerOrchestratorId);
 
                 // An instance with the specified ID exists, don't create one.
                 return req.CreateErrorResponse(

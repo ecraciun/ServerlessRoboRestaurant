@@ -39,7 +39,7 @@ namespace Restaurant
                                 x.Status == SupplierOrderStatus.Refused ||
                                 (
                                     (x.Status == SupplierOrderStatus.Created || x.Status == SupplierOrderStatus.Processing) &&
-                                    x.LastModified.AddSeconds(x.DeliveryETAInSeconds) > context.CurrentUtcDateTime
+                                    x.LastModified.AddSeconds(x.DeliveryETAInSeconds) <= context.CurrentUtcDateTime
                                 )
                             ).ToList();
                     var rejectedOrders = ordersToRemove.Where(x => x.Status == SupplierOrderStatus.Refused);
@@ -79,7 +79,7 @@ namespace Restaurant
 #if DEBUG
         [FunctionName("SupplierOrderMonitorOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestMessage req,
             [OrchestrationClient]DurableOrchestrationClient starter,
             ILogger log)
         {

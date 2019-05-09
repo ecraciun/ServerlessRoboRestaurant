@@ -36,7 +36,7 @@ namespace Restaurant
 
             foreach (var item in orderedItems)
             {
-                var id = inventory.FirstOrDefault(x => x.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase));
+                var id = inventory.FirstOrDefault(x => x.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase)).Id;
                 updateTasks.Add(context.CallActivityAsync<bool>(Constants.UpdateStockActivityFunctionName, (id, item.Quantity)));
             }
 
@@ -66,8 +66,8 @@ namespace Restaurant
             }
             else
             {
-                await starter.TerminateAsync(Constants.SupplierOrderReceiverOrchestratorFunctionName, "Force start new");
-                await starter.PurgeInstanceHistoryAsync(Constants.SupplierOrderReceiverOrchestratorFunctionName);
+                await starter.TerminateAsync(Constants.SupplierOrderReceiverOrchestratorId, "Force start new");
+                await starter.PurgeInstanceHistoryAsync(Constants.SupplierOrderReceiverOrchestratorId);
 
                 // An instance with the specified ID exists, don't create one.
                 return req.CreateErrorResponse(
