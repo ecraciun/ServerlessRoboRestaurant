@@ -5,6 +5,7 @@
         Created,
         Processing,
         Delivered,
-        Refused
+        Refused,
+        PickedUp
     }
 }

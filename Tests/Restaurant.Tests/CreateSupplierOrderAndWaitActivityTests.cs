@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Restaurant.Tests
 {
-    public class CreateSupplierOrderActivityTests
+    public class CreateSupplierOrderAndWaitActivityTests
     {
         private readonly Mock<IBaseRepositoryFactory<SupplierOrder>> _repoFactoryMock;
         private readonly Mock<IBaseRepository<SupplierOrder>> _repoMock;
@@ -33,7 +33,7 @@ namespace Restaurant.Tests
             }
         };
 
-        public CreateSupplierOrderActivityTests()
+        public CreateSupplierOrderAndWaitActivityTests()
         {
             _repoMock = new Mock<IBaseRepository<SupplierOrder>>();
             _repoMock.Setup(x => x.GetAsync(It.IsAny<string>())).Returns(Task.FromResult(_testOrder));
@@ -50,14 +50,14 @@ namespace Restaurant.Tests
         [Fact]
         public async Task Run_Should_Return_False_When_Order_Is_Null()
         {
-            var result = await CreateSupplierOrderActivity.Run(null, _repoFactoryMock.Object, _logger);
+            var result = await CreateSupplierOrderAndWaitActivity.Run(null, _repoFactoryMock.Object, _logger);
             Assert.False(result);
         }
 
         [Fact]
         public async Task Run_Should_Return_False_When_OrderedItems_Is_Empty()
         {
-            var result = await CreateSupplierOrderActivity.Run(new SupplierOrder
+            var result = await CreateSupplierOrderAndWaitActivity.Run(new SupplierOrder
             {
                 SupplierId = "abc",
                 OrderedItems = new List<SupplierOrderIngredientItem>()
@@ -68,7 +68,7 @@ namespace Restaurant.Tests
         [Fact]
         public async Task Run_Should_Return_False_When_SupplierId_Is_Empty()
         {
-            var result = await CreateSupplierOrderActivity.Run(new SupplierOrder
+            var result = await CreateSupplierOrderAndWaitActivity.Run(new SupplierOrder
             {
                 SupplierId = string.Empty,
                 OrderedItems = new List<SupplierOrderIngredientItem>
@@ -86,7 +86,7 @@ namespace Restaurant.Tests
         [Fact]
         public async Task Run_Should_Return_True_When_Order_Is_Ok()
         {
-            var result = await CreateSupplierOrderActivity.Run(_testOrder, _repoFactoryMock.Object, _logger);
+            var result = await CreateSupplierOrderAndWaitActivity.Run(_testOrder, _repoFactoryMock.Object, _logger);
 
             Assert.True(result);
 

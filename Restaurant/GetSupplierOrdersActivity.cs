@@ -4,36 +4,32 @@ using Core.Services.Interfaces;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
 namespace Restaurant
 {
-    public static class CreateSupplierOrderActivity
+    public static class GetSupplierOrdersActivity
     {
-        [FunctionName(Constants.CreateSupplierOrderActivityFunctionName)]
-        public static async Task<string> Run(
-            [ActivityTrigger]SupplierOrder supplierOrder,
+        [FunctionName(Constants.GetSupplierOrdersActivityFunctionName)]
+        public static async Task<IList<SupplierOrder>> Run(
+            [ActivityTrigger]List<string> supplierOrderIds,
             [Inject]IBaseRepositoryFactory<SupplierOrder> supplierOrdersRepositoryFactory,
             ILogger log)
         {
-            if (supplierOrder != null &&
-                !string.IsNullOrEmpty(supplierOrder.SupplierId) &&
-                (supplierOrder.OrderedItems?.Any() ?? false))
+            IList<SupplierOrder> result = null;
+
+            if (supplierOrderIds?.Any() ?? false)
             {
                 var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
                 var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                 var repo = supplierOrdersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.SupplierOrdersCollectionName);
-
-                supplierOrder.CreatedAt = DateTime.UtcNow;
-                supplierOrder.LastModified = supplierOrder.CreatedAt;
-                supplierOrder.Status = SupplierOrderStatus.Processing;
-
-                return await repo.AddAsync(supplierOrder);
+                result = await repo.GetWhereAsync(x => supplierOrderIds.Contains(x.Id));
             }
 
-            return null;
+            return result;
         }
     }
 }

@@ -10,10 +10,10 @@ using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
 namespace Restaurant
 {
-    public static class CreateSupplierOrderActivity
+    public static class CreateSupplierOrderAndWaitActivity
     {
-        [FunctionName(Constants.CreateSupplierOrderActivityFunctionName)]
-        public static async Task<string> Run(
+        [FunctionName(Constants.CreateSupplierOrderAndWaitActivityFunctionName)]
+        public static async Task<bool> Run(
             [ActivityTrigger]SupplierOrder supplierOrder,
             [Inject]IBaseRepositoryFactory<SupplierOrder> supplierOrdersRepositoryFactory,
             ILogger log)
@@ -30,10 +30,19 @@ namespace Restaurant
                 supplierOrder.LastModified = supplierOrder.CreatedAt;
                 supplierOrder.Status = SupplierOrderStatus.Processing;
 
-                return await repo.AddAsync(supplierOrder);
+                var orderId = await repo.AddAsync(supplierOrder);
+                
+                await Task.Delay(TimeSpan.FromSeconds(supplierOrder.DeliveryETAInSeconds));
+
+                supplierOrder = await repo.GetAsync(orderId);
+
+                return await repo.TryUpdateWithRetry(supplierOrder, (order) =>
+                {
+                    order.Status = SupplierOrderStatus.Delivered;
+                });
             }
 
-            return null;
+            return false;
         }
     }
 }

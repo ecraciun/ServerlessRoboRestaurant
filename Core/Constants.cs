@@ -20,6 +20,7 @@ namespace Core
         public const string GetStockIngredientsFunctionName                 = "GetStockIngredients";
         public const string GetOrdersFunctionName                           = "GetOrders";
         public const string CheckAndReserveStockActivityFunctionName        = "CheckAndReserveStock";
+        public const string CreateSupplierOrderAndWaitActivityFunctionName  = "CreateSupplierOrderAndWait";
         public const string CreateSupplierOrderActivityFunctionName         = "CreateSupplierOrder";
         public const string DishOrchestratorFunctionName                    = "DishOrchestrator";
         public const string RecipeStepActivityFunctionName                  = "RecipeStep";
@@ -33,6 +34,8 @@ namespace Core
         public const string GetStockActivityFunctionName                    = "GetStock";
         public const string SupplierOrderReceiverOrchestratorFunctionName   = "SupplierOrderReceiverOrchestrator";
         public const string SupplierOrderMonitorOrchestratorFunctionName    = "SupplierOrderMonitorOrchestrator";
+        public const string GetSupplierOrdersActivityFunctionName           = "GetSupplierOrders";
+        public const string UpdateSupplierOrderActivityFunctionName         = "UpdateSupplierOrderActivity";
 
         //public const string FunctionName = "";
 
@@ -53,5 +56,6 @@ namespace Core
         public const string DatabaseName                                    = "RoboRestaurant";
         public const string SupplierOrdersCollectionName                    = "SupplierOrders";
         public const string SuppliersCollectionName                         = "Suppliers";
+        public const string SupplierOrderReceivedEventName                  = "SupplierOrderReceived";
     }
 }

@@ -17,7 +17,8 @@ namespace Restaurant
     {
         [FunctionName(Constants.InventoryCheckerEternalOrchestratorFunctionName)]
         public static async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContextBase context)
+            [OrchestrationTrigger] DurableOrchestrationContextBase context,
+            [OrchestrationClient]DurableOrchestrationClientBase client)
         {
             context.SetCustomStatus("Starting new run");
             var currentStockIngredients = await context.CallActivityAsync<IList<StockIngredient>>(
@@ -26,15 +27,18 @@ namespace Restaurant
             var ingredientsThatNeedReplenishing = currentStockIngredients
                 .Where(x => x.StockQuantity < Constants.RegularInventoryCheckMinimumThreshold).ToList();
 
-            context.SetCustomStatus("Finding appropriate suppliers");
-            var groupedSupplierResults = await GetNeededSuppliers(context,
-                ingredientsThatNeedReplenishing.Select(x => x.Name).ToList());
+            if (ingredientsThatNeedReplenishing.Any())
+            {
+                context.SetCustomStatus("Finding appropriate suppliers");
+                var groupedSupplierResults = await GetNeededSuppliers(context,
+                    ingredientsThatNeedReplenishing.Select(x => x.Name).ToList());
 
-            context.SetCustomStatus("Creating and waiting for supplier orders");
-            await CreateSupplierOrders(context, groupedSupplierResults);
+                context.SetCustomStatus("Creating and waiting for supplier orders");
+                var orderIds = await CreateSupplierOrders(context, groupedSupplierResults);
 
-            context.SetCustomStatus("Updating stock");
-            await UpdateStockQuantities(context, ingredientsThatNeedReplenishing);
+                context.SetCustomStatus("Starting monitor");
+                await client.StartNewAsync(Constants.SupplierOrderMonitorOrchestratorFunctionName, orderIds); // fire and forget
+            }
 
             context.SetCustomStatus("Sleeping");
             DateTime nextCheck = context.CurrentUtcDateTime.AddSeconds(Constants.RegularInventoryCheckSleepTimeInSeconds);
@@ -80,10 +84,10 @@ namespace Restaurant
         }
 
         
-        private static async Task CreateSupplierOrders(DurableOrchestrationContextBase context,
+        private static async Task<List<string>> CreateSupplierOrders(DurableOrchestrationContextBase context,
             List<IGrouping<string, SupplierQueryResponse>> groupdResults)
         {
-            var supplierOrderTasks = new List<Task<bool>>();
+            var supplierOrderTasks = new List<Task<string>>();
             foreach (var group in groupdResults)
             {
                 var supplierOrder = new SupplierOrder
@@ -101,10 +105,11 @@ namespace Restaurant
                 };
 
                 supplierOrderTasks.Add(
-                    context.CallActivityAsync<bool>(Constants.CreateSupplierOrderActivityFunctionName, supplierOrder));
+                    context.CallActivityAsync<string>(Constants.CreateSupplierOrderActivityFunctionName, supplierOrder));
             }
 
-            await Task.WhenAll(supplierOrderTasks);
+            var orderIds = await Task.WhenAll(supplierOrderTasks);
+            return orderIds.ToList();
         }
 
 #if DEBUG

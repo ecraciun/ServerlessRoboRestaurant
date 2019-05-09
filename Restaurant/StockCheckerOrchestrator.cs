@@ -75,7 +75,7 @@ namespace Restaurant
                 };
 
                 supplierOrderTasks.Add(
-                    context.CallActivityAsync<bool>(Constants.CreateSupplierOrderActivityFunctionName, supplierOrder));
+                    context.CallActivityAsync<bool>(Constants.CreateSupplierOrderAndWaitActivityFunctionName, supplierOrder));
             }
 
             await Task.WhenAll(supplierOrderTasks);
