@@ -17,9 +17,11 @@ This solution models a simplified, theoretical version of a restaurant with focu
 - sending and listening for external events
 - eternal orchestrations
 - singleton orchestrations
+- call activity function with a timeout
 - error handling
 - logging
 - unit testing
+
 
 ### Description
 

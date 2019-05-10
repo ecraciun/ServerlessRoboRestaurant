@@ -21,23 +21,25 @@ namespace Restaurant
             [OrchestrationClient]DurableOrchestrationClientBase client)
         {
             context.SetCustomStatus("Starting new run");
-            var currentStockIngredients = await context.CallActivityAsync<IList<StockIngredient>>(
-                Constants.GetStockActivityFunctionName, null);
+            IList<StockIngredient> currentStockIngredients = await GetCurrentStockWithTimeout(context);
 
-            var ingredientsThatNeedReplenishing = currentStockIngredients
+            if(currentStockIngredients != null)
+            {
+                var ingredientsThatNeedReplenishing = currentStockIngredients
                 .Where(x => x.StockQuantity < Constants.RegularInventoryCheckMinimumThreshold).ToList();
 
-            if (ingredientsThatNeedReplenishing.Any())
-            {
-                context.SetCustomStatus("Finding appropriate suppliers");
-                var groupedSupplierResults = await GetNeededSuppliers(context,
-                    ingredientsThatNeedReplenishing.Select(x => x.Name).ToList());
+                if (ingredientsThatNeedReplenishing.Any())
+                {
+                    context.SetCustomStatus("Finding appropriate suppliers");
+                    var groupedSupplierResults = await GetNeededSuppliers(context,
+                        ingredientsThatNeedReplenishing.Select(x => x.Name).ToList());
 
-                context.SetCustomStatus("Creating and waiting for supplier orders");
-                var orderIds = await CreateSupplierOrders(context, groupedSupplierResults);
+                    context.SetCustomStatus("Creating and waiting for supplier orders");
+                    var orderIds = await CreateSupplierOrders(context, groupedSupplierResults);
 
-                context.SetCustomStatus("Starting monitor");
-                await client.StartNewAsync(Constants.SupplierOrderMonitorOrchestratorFunctionName, orderIds); // fire and forget
+                    context.SetCustomStatus("Starting monitor");
+                    await client.StartNewAsync(Constants.SupplierOrderMonitorOrchestratorFunctionName, orderIds); // fire and forget
+                }
             }
 
             context.SetCustomStatus("Sleeping");
@@ -47,7 +49,27 @@ namespace Restaurant
             context.ContinueAsNew(null);
         }
 
-        
+        private static async Task<IList<StockIngredient>> GetCurrentStockWithTimeout(DurableOrchestrationContextBase context)
+        {
+            var deadline = context.CurrentUtcDateTime.AddSeconds(30);
+            using (var cts = new CancellationTokenSource())
+            {
+                var activityTask = context.CallActivityAsync<IList<StockIngredient>>(Constants.GetStockActivityFunctionName, null);
+                var timeoutTask = context.CreateTimer(deadline, cts.Token);
+
+                var winner = await Task.WhenAny(activityTask, timeoutTask);
+                if (winner == activityTask)
+                {
+                    cts.Cancel();
+                    return activityTask.Result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         private static async Task UpdateStockQuantities(DurableOrchestrationContextBase context, 
             List<StockIngredient> ingredientsThatNeedReplenishing)
         {
