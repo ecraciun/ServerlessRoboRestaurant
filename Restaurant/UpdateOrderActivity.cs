@@ -1,4 +1,5 @@
 using Core;
+using Core.DTOs;
 using Core.Entities;
 using Core.Services.Interfaces;
 using Microsoft.Azure.WebJobs;

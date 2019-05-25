@@ -1,4 +1,6 @@
-﻿namespace Core.Entities
+﻿using Core.Entities;
+
+namespace Core.DTOs
 {
     public class OrderDTO
     {

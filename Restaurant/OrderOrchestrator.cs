@@ -1,4 +1,5 @@
 using Core;
+using Core.DTOs;
 using Core.Entities;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;

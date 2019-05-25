@@ -1,4 +1,5 @@
 using Core;
+using Core.DTOs;
 using Core.Entities;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -35,18 +36,24 @@ namespace ClientAPI
             {
                 try
                 {
-                    var order = JsonConvert.DeserializeObject<Order>(requestBody);
+                    var order = JsonConvert.DeserializeObject<PlaceOrderDTO>(requestBody);
                     if (order.OrderItems == null || !order.OrderItems.Any())
                     {
                         return new BadRequestObjectResult("Invalid order");
                     }
-                    order.LastModifiedUtc = order.TimePlacedUtc = DateTime.UtcNow;
-                    order.Status = OrderStatus.New;
+                    var now = DateTime.UtcNow;
+                    var orderEntity = new Order
+                    {
+                        LastModifiedUtc = now,
+                        TimePlacedUtc = now,
+                        Status = OrderStatus.New,
+                        OrderItems = order.OrderItems
+                    };
 
                     var cosmosDbEndpoint = Environment.GetEnvironmentVariable(Constants.CosmosDbEndpointKeyName);
                     var cosmosDbKey = Environment.GetEnvironmentVariable(Constants.CosmosDbKeyKeyName);
                     var repo = ordersRepositoryFactory.GetInstance(cosmosDbEndpoint, cosmosDbKey, Constants.OrdersCollectionName);
-                    var id = await repo.AddAsync(order);
+                    var id = await repo.AddAsync(orderEntity);
                     return new CreatedResult($"api/{nameof(GetOrderStatus)}/{id}", null);
                 }
                 catch (Exception ex) when (ex is JsonReaderException || ex is JsonSerializationException)

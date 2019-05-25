@@ -1,3 +1,4 @@
+using Core.DTOs;
 using Core.Entities;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,8 @@ namespace ClientAPI.Tests
         private readonly Mock<IBaseRepositoryFactory<Order>> _repoFactoryMock;
         private readonly Mock<IBaseRepository<Order>> _repoMock;
         private readonly ILogger _logger = TestFactory.CreateLogger();
-        private readonly Order _dummyOrder = new Order
+        private readonly PlaceOrderDTO _dummyOrder = new PlaceOrderDTO
         {
-            Id = "1",
-            Status = OrderStatus.New,
-            LastModifiedUtc = DateTime.UtcNow,
-            TimePlacedUtc = DateTime.UtcNow,
             OrderItems = new List<OrderItem>
             {
                 new OrderItem
@@ -37,7 +34,7 @@ namespace ClientAPI.Tests
         public PlaceOrderTests()
         {
             _repoMock = new Mock<IBaseRepository<Order>>();
-            _repoMock.Setup(x => x.AddAsync(It.IsAny<Order>())).Returns(Task.FromResult(_dummyOrder.Id));
+            _repoMock.Setup(x => x.AddAsync(It.IsAny<Order>())).Returns(Task.FromResult("1"));
 
             _repoFactoryMock = new Mock<IBaseRepositoryFactory<Order>>();
             _repoFactoryMock.Setup(x => x.GetInstance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))

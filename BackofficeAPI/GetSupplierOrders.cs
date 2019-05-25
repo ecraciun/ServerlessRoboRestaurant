@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
@@ -44,7 +45,13 @@ namespace BackofficeAPI
                 result = await repo.GetWhereAsync(x => x.Status == orderStatus);
             }
 
-            return new JsonResult(result);
+            var groupedResult = result.OrderByDescending(o => o.CreatedAt).GroupBy(o => o.Status).Select(go =>
+            new {
+                Status = go.Key.ToString(),
+                Orders = go.ToList()
+            });
+
+            return new JsonResult(groupedResult);
         }
     }
 }
