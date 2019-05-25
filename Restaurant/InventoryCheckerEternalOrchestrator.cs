@@ -69,20 +69,6 @@ namespace Restaurant
                 }
             }
         }
-
-        private static async Task UpdateStockQuantities(DurableOrchestrationContextBase context, 
-            List<StockIngredient> ingredientsThatNeedReplenishing)
-        {
-            var updateStockTasks = new List<Task<bool>>();
-            foreach(var ingredient in ingredientsThatNeedReplenishing)
-            {
-                updateStockTasks.Add(context.CallActivityAsync<bool>(
-                    Constants.UpdateStockActivityFunctionName, 
-                    (ingredient.Id, Constants.DefaultRegularIngredientOrderQuantity)));
-            }
-            await Task.WhenAll(updateStockTasks);
-        }
-
         
         private static async Task<List<IGrouping<string, SupplierQueryResponse>>> GetNeededSuppliers(
             DurableOrchestrationContextBase context, List<string> ingredientsToOrder)
@@ -104,7 +90,6 @@ namespace Restaurant
             var groupdResults = supplierQueryResponses.GroupBy(x => x.SupplierId).ToList();
             return groupdResults;
         }
-
         
         private static async Task<List<string>> CreateSupplierOrders(DurableOrchestrationContextBase context,
             List<IGrouping<string, SupplierQueryResponse>> groupdResults)

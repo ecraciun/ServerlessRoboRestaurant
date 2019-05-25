@@ -15,7 +15,8 @@ namespace Restaurant
     {
         [FunctionName(Constants.OrderOrchestratorFunctionName)]
         public static async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContextBase context)
+            [OrchestrationTrigger] DurableOrchestrationContextBase context,
+            ILogger log)
         {
             var order = context.GetInput<Order>();
 
@@ -24,6 +25,8 @@ namespace Restaurant
                 order.LastModifiedUtc == order.TimePlacedUtc &&
                 order.Status == OrderStatus.New)
             {
+                log.LogInformation($"A new order ({order.Id}) has been received and taken by orchestrator {context.InstanceId}");
+
                 bool orderUpdated = await UpdateOrder(context, order, OrderStatus.Preparing);
 
                 var dishesToPrepare = await GetDishesToPrepare(context, order);

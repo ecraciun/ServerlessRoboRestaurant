@@ -38,7 +38,7 @@ namespace Restaurant
 
                 return await repo.TryUpdateWithRetry(supplierOrder, (order) =>
                 {
-                    order.Status = SupplierOrderStatus.Delivered;
+                    order.Status = SupplierOrderStatus.PickedUp;
                 });
             }
 
