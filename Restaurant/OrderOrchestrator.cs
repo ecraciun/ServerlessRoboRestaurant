@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -26,23 +27,31 @@ namespace Restaurant
                 order.LastModifiedUtc == order.TimePlacedUtc &&
                 order.Status == OrderStatus.New)
             {
-                log.LogInformation($"A new order ({order.Id}) has been received and taken by orchestrator {context.InstanceId}");
-
-                bool orderUpdated = await UpdateOrder(context, order, OrderStatus.Preparing);
-
-                var dishesToPrepare = await GetDishesToPrepare(context, order);
-
-                var neededIngredients = GetAllNeededIngredientsForOrder(dishesToPrepare);
-
-                var ingredientsReserved = await context.CallSubOrchestratorAsync<bool>(
-                    Constants.StockCheckerOrchestratorFunctionName, neededIngredients
-                    );
-
-                if (ingredientsReserved)
+                try
                 {
-                    await PrepareDishes(context, dishesToPrepare);
+                    log.LogInformation($"A new order ({order.Id}) has been received and taken by orchestrator {context.InstanceId}");
 
-                    orderUpdated = await UpdateOrder(context, order, OrderStatus.Ready);
+                    bool orderUpdated = await UpdateOrder(context, order, OrderStatus.Preparing);
+
+                    var dishesToPrepare = await GetDishesToPrepare(context, order);
+
+                    var neededIngredients = GetAllNeededIngredientsForOrder(dishesToPrepare);
+
+                    var ingredientsReserved = await context.CallSubOrchestratorAsync<bool>(
+                        Constants.StockCheckerOrchestratorFunctionName, neededIngredients
+                        );
+
+                    if (ingredientsReserved)
+                    {
+                        await PrepareDishes(context, dishesToPrepare);
+
+                        orderUpdated = await UpdateOrder(context, order, OrderStatus.Ready);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    log.LogError(ex, $"Order id: {order.Id}");
+                    await UpdateOrder(context, order, OrderStatus.Canceled);
                 }
             }
         }

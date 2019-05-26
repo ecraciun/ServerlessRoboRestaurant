@@ -11,5 +11,7 @@ namespace Core.Entities
 
         [JsonProperty("_etag")]
         public string ETag { get; set; }
+
+        public string Partition => Constants.DefaultPartitionName;
     }
 }
