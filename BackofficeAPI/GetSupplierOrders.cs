@@ -45,11 +45,12 @@ namespace BackofficeAPI
                 result = await repo.GetWhereAsync(x => x.Status == orderStatus);
             }
 
-            var groupedResult = result.OrderByDescending(o => o.CreatedAt).GroupBy(o => o.Status).Select(go =>
-            new {
-                Status = go.Key.ToString(),
-                Orders = go.ToList()
-            });
+            var groupedResult = result != null ? result.OrderByDescending(o => o.CreatedAt).GroupBy(o => o.Status).Select(go =>
+                new {
+                    Status = go.Key.ToString(),
+                    Orders = go.ToList()
+                }) 
+                : null;
 
             return new JsonResult(groupedResult);
         }

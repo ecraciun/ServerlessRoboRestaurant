@@ -3,6 +3,7 @@ using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,10 +65,11 @@ namespace BackofficeAPI.Tests
             var request = TestFactory.CreateHttpRequest();
             var response = await GetOrders.Run(request, _repoFactoryMock.Object, _logger) as JsonResult;
             Assert.NotNull(response);
-            var data = response.Value as List<Order>;
+            var stringData = JsonConvert.SerializeObject(response.Value);
+            var data = JsonConvert.DeserializeObject<List<OrderResponse>>(stringData);
             Assert.NotNull(data);
             Assert.NotEmpty(data);
-            Assert.Equal(_orders.Count, data.Count);
+            Assert.Equal(_orders.Count, data.Sum(o => o.Orders.Count));
         }
 
         [Fact]
@@ -77,10 +79,12 @@ namespace BackofficeAPI.Tests
                 new Dictionary<string, string> { { "status", OrderStatus.New.ToString() } });
             var response = await GetOrders.Run(request, _repoFactoryMock.Object, _logger) as JsonResult;
             Assert.NotNull(response);
-            var data = response.Value as List<Order>;
+            var stringData = JsonConvert.SerializeObject(response.Value);
+            var data = JsonConvert.DeserializeObject<List<OrderResponse>>(stringData);
             Assert.NotNull(data);
             Assert.NotEmpty(data);
             Assert.Single(data);
+            Assert.Single(data.First().Orders);
         }
 
         [Theory]
@@ -93,6 +97,12 @@ namespace BackofficeAPI.Tests
             var response = await GetOrders.Run(request, _repoFactoryMock.Object, _logger) as JsonResult;
             Assert.NotNull(response);
             Assert.Null(response.Value);
+        }
+
+        private class OrderResponse
+        {
+            public string Status { get; set; }
+            public List<Order> Orders { get; set; }
         }
     }
 }
