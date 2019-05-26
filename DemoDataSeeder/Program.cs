@@ -434,71 +434,71 @@ namespace DemoDataSeeder
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.OrdersCollectionName },
                 new RequestOptions { OfferThroughput = CollectionThroughput });
-            var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.OrdersCollectionName);
+            //var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.OrdersCollectionName);
 
-            var order = new Order
-            {
-                Id = Guid.NewGuid().ToString(),
-                TimePlacedUtc = DateTime.UtcNow,
-                Status = OrderStatus.New,
-                OrderItems = new List<OrderItem>
-                {
-                    new OrderItem
-                    {
-                        DishId = _dishes.FirstOrDefault(x => x.Title.Equals("French fries", StringComparison.OrdinalIgnoreCase)).Id,
-                        Quantity = 1
-                    },
-                    new OrderItem
-                    {
-                        DishId = _dishes.FirstOrDefault(x => x.Title.Equals("Hamburger", StringComparison.OrdinalIgnoreCase)).Id,
-                        Quantity = 1
-                    }
-                }
-            };
-            order.LastModifiedUtc = order.TimePlacedUtc;
-            _orders.Add(order);
-            order = new Order
-            {
-                Id = Guid.NewGuid().ToString(),
-                TimePlacedUtc = DateTime.UtcNow,
-                Status = OrderStatus.New,
-                OrderItems = new List<OrderItem>
-                {
-                    new OrderItem
-                    {
-                        DishId = _dishes.FirstOrDefault(x => x.Title.Equals("French fries", StringComparison.OrdinalIgnoreCase)).Id,
-                        Quantity = 1
-                    },
-                    new OrderItem
-                    {
-                        DishId = _dishes.FirstOrDefault(x => x.Title.Equals("Cheese platter", StringComparison.OrdinalIgnoreCase)).Id,
-                        Quantity = 1
-                    }
-                }
-            };
-            order.LastModifiedUtc = order.TimePlacedUtc;
-            _orders.Add(order);
-            order = new Order
-            {
-                Id = Guid.NewGuid().ToString(),
-                TimePlacedUtc = DateTime.UtcNow,
-                Status = OrderStatus.New,
-                OrderItems = new List<OrderItem>
-                {
-                    new OrderItem
-                    {
-                        DishId = _dishes.FirstOrDefault(x => x.Title.Equals("Hotdog", StringComparison.OrdinalIgnoreCase)).Id,
-                        Quantity = 6
-                    }
-                }
-            };
-            order.LastModifiedUtc = order.TimePlacedUtc;
-            _orders.Add(order);
+            //var order = new Order
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    TimePlacedUtc = DateTime.UtcNow,
+            //    Status = OrderStatus.New,
+            //    OrderItems = new List<OrderItem>
+            //    {
+            //        new OrderItem
+            //        {
+            //            DishId = _dishes.FirstOrDefault(x => x.Title.Equals("French fries", StringComparison.OrdinalIgnoreCase)).Id,
+            //            Quantity = 1
+            //        },
+            //        new OrderItem
+            //        {
+            //            DishId = _dishes.FirstOrDefault(x => x.Title.Equals("Hamburger", StringComparison.OrdinalIgnoreCase)).Id,
+            //            Quantity = 1
+            //        }
+            //    }
+            //};
+            //order.LastModifiedUtc = order.TimePlacedUtc;
+            //_orders.Add(order);
+            //order = new Order
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    TimePlacedUtc = DateTime.UtcNow,
+            //    Status = OrderStatus.New,
+            //    OrderItems = new List<OrderItem>
+            //    {
+            //        new OrderItem
+            //        {
+            //            DishId = _dishes.FirstOrDefault(x => x.Title.Equals("French fries", StringComparison.OrdinalIgnoreCase)).Id,
+            //            Quantity = 1
+            //        },
+            //        new OrderItem
+            //        {
+            //            DishId = _dishes.FirstOrDefault(x => x.Title.Equals("Cheese platter", StringComparison.OrdinalIgnoreCase)).Id,
+            //            Quantity = 1
+            //        }
+            //    }
+            //};
+            //order.LastModifiedUtc = order.TimePlacedUtc;
+            //_orders.Add(order);
+            //order = new Order
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    TimePlacedUtc = DateTime.UtcNow,
+            //    Status = OrderStatus.New,
+            //    OrderItems = new List<OrderItem>
+            //    {
+            //        new OrderItem
+            //        {
+            //            DishId = _dishes.FirstOrDefault(x => x.Title.Equals("Hotdog", StringComparison.OrdinalIgnoreCase)).Id,
+            //            Quantity = 6
+            //        }
+            //    }
+            //};
+            //order.LastModifiedUtc = order.TimePlacedUtc;
+            //_orders.Add(order);
 
-            foreach (var toAdd in _orders)
-            {
-                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
-            }
+            //foreach (var toAdd in _orders)
+            //{
+            //    await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
+            //}
 
             Console.WriteLine($"{Constants.OrdersCollectionName} collection and data seeded.");
         }
@@ -649,68 +649,68 @@ namespace DemoDataSeeder
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(_database.SelfLink,
                 new DocumentCollection { Id = Constants.SupplierOrdersCollectionName },
                 new RequestOptions { OfferThroughput = CollectionThroughput });
-            var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.SupplierOrdersCollectionName);
+            //var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DatabaseName, Constants.SupplierOrdersCollectionName);
 
-            var supplierOrder = new SupplierOrder
-            {
-                Id = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow,
-                LastModified = DateTime.UtcNow,
-                SupplierId = _suppliers.First().Id,
-                Status = SupplierOrderStatus.Created,
-                OrderedItems = new List<SupplierOrderIngredientItem>
-                {
-                    new SupplierOrderIngredientItem
-                    {
-                        Name = "Ground beef meat",
-                        Quantity = 100
-                    },
-                    new SupplierOrderIngredientItem
-                    {
-                        Name = "Chili",
-                        Quantity = 100
-                    },
-                    new SupplierOrderIngredientItem
-                    {
-                        Name = "Potato",
-                        Quantity = 100
-                    },
-                }
-            };
-            _supplierOrders.Add(supplierOrder);
+            //var supplierOrder = new SupplierOrder
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    CreatedAt = DateTime.UtcNow,
+            //    LastModified = DateTime.UtcNow,
+            //    SupplierId = _suppliers.First().Id,
+            //    Status = SupplierOrderStatus.Created,
+            //    OrderedItems = new List<SupplierOrderIngredientItem>
+            //    {
+            //        new SupplierOrderIngredientItem
+            //        {
+            //            Name = "Ground beef meat",
+            //            Quantity = 100
+            //        },
+            //        new SupplierOrderIngredientItem
+            //        {
+            //            Name = "Chili",
+            //            Quantity = 100
+            //        },
+            //        new SupplierOrderIngredientItem
+            //        {
+            //            Name = "Potato",
+            //            Quantity = 100
+            //        },
+            //    }
+            //};
+            //_supplierOrders.Add(supplierOrder);
 
-            supplierOrder = new SupplierOrder
-            {
-                Id = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow,
-                LastModified = DateTime.UtcNow,
-                SupplierId = _suppliers.Last().Id,
-                Status = SupplierOrderStatus.Created,
-                OrderedItems = new List<SupplierOrderIngredientItem>
-                {
-                    new SupplierOrderIngredientItem
-                    {
-                        Name = "Cheddar",
-                        Quantity = 100
-                    },
-                    new SupplierOrderIngredientItem
-                    {
-                        Name = "Vegetable oil",
-                        Quantity = 100
-                    },
-                    new SupplierOrderIngredientItem
-                    {
-                        Name = "Bacon",
-                        Quantity = 100
-                    },
-                }
-            };
-            _supplierOrders.Add(supplierOrder);
+            //supplierOrder = new SupplierOrder
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    CreatedAt = DateTime.UtcNow,
+            //    LastModified = DateTime.UtcNow,
+            //    SupplierId = _suppliers.Last().Id,
+            //    Status = SupplierOrderStatus.Created,
+            //    OrderedItems = new List<SupplierOrderIngredientItem>
+            //    {
+            //        new SupplierOrderIngredientItem
+            //        {
+            //            Name = "Cheddar",
+            //            Quantity = 100
+            //        },
+            //        new SupplierOrderIngredientItem
+            //        {
+            //            Name = "Vegetable oil",
+            //            Quantity = 100
+            //        },
+            //        new SupplierOrderIngredientItem
+            //        {
+            //            Name = "Bacon",
+            //            Quantity = 100
+            //        },
+            //    }
+            //};
+            //_supplierOrders.Add(supplierOrder);
 
-            foreach (var toAdd in _supplierOrders)
-            {
-                await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
-            }
+            //foreach (var toAdd in _supplierOrders)
+            //{
+            //    await _documentClient.CreateDocumentAsync(collectionUri, toAdd, disableAutomaticIdGeneration: true);
+            //}
 
             Console.WriteLine($"{Constants.SupplierOrdersCollectionName} collection and data seeded.");
         }
