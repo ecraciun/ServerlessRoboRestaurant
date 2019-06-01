@@ -1,0 +1,160 @@
+{
+	"info": {
+		"_postman_id": "23b3b2f8-e34e-4d13-8044-5b95c5377e2a",
+		"name": "ServerlessRoboRestaurant-Azure",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "[Client] Get Menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ClientApiUrl}}/GetMenu",
+							"host": [
+								"{{ClientApiUrl}}"
+							],
+							"path": [
+								"GetMenu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Client] Place Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"OrderItems\": [\n\t\t{\n\t\t\t\"DishId\": \"d07e6a94-2680-418e-9f95-d5bcf9ed525d\",\n\t\t\t\"Quantity\": \"3\"\n\t\t},\n\t\t{\n\t\t\t\"DishId\": \"52bf68e7-9e7f-463a-beb1-dc85661fbd40\",\n\t\t\t\"Quantity\": \"5\"\n\t\t},\n\t\t{\n\t\t\t\"DishId\": \"fc9b840a-cf22-48a7-8c9d-cfd605333fea\",\n\t\t\t\"Quantity\": \"2\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "{{ClientApiUrl}}/PlaceOrder",
+							"host": [
+								"{{ClientApiUrl}}"
+							],
+							"path": [
+								"PlaceOrder"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Backoffice",
+			"item": [
+				{
+					"name": "[Backoffice] Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BackofficeApiUrl}}/GetOrders",
+							"host": [
+								"{{BackofficeApiUrl}}"
+							],
+							"path": [
+								"GetOrders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Backoffice] Get Inventory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BackofficeApiUrl}}/GetStockIngredients",
+							"host": [
+								"{{BackofficeApiUrl}}"
+							],
+							"path": [
+								"GetStockIngredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Backoffice] Get All Supplier Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BackofficeApiUrl}}/GetSupplierOrders",
+							"host": [
+								"{{BackofficeApiUrl}}"
+							],
+							"path": [
+								"GetSupplierOrders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restaurant",
+			"item": [
+				{
+					"name": "[Restaurant] Get all orchestrators",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{RestaurantApiUrl}}/GetAllOrchestratorsStatus?expand=0",
+							"host": [
+								"{{RestaurantApiUrl}}"
+							],
+							"path": [
+								"GetAllOrchestratorsStatus"
+							],
+							"query": [
+								{
+									"key": "expand",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Restaurant] Purge completed orchestrators history",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{RestaurantApiUrl}}/PurgeCompletedOrchestrators",
+							"host": [
+								"{{RestaurantApiUrl}}"
+							],
+							"path": [
+								"PurgeCompletedOrchestrators"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

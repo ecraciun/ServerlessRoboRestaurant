@@ -27,7 +27,7 @@ namespace DemoDataSeeder
         {
             //await SetupAndSeed();
 
-            //await PlaceMultipleOrders(10);
+            await PlaceMultipleOrders(1);
         }
 
         private static async Task PlaceMultipleOrders(int numberOfOrders)

@@ -5,6 +5,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace Restaurant
 {
@@ -16,7 +18,24 @@ namespace Restaurant
             [OrchestrationClient] DurableOrchestrationClientBase client,
             ILogger log)
         {
-            var orchestrators = await client.GetStatusAsync();
+            var statusList = Enum.GetValues(typeof(OrchestrationRuntimeStatus)).Cast<OrchestrationRuntimeStatus>();
+            var limitToToday = req.Query.ContainsKey("today") ?
+                req.Query["today"] == "1" :
+                false;
+
+            IList<DurableOrchestrationStatus> orchestrators;
+            if (limitToToday)
+            {
+                orchestrators = await client.GetStatusAsync(DateTime.Today.AddHours(-2.0), null, statusList);
+            }
+            else
+            {
+                orchestrators = await client.GetStatusAsync();
+            }
+
+            var expandResults = req.Query.ContainsKey("expand") ?
+                req.Query["expand"] == "1" :
+                false;
 
             var result = orchestrators.OrderByDescending(o => o.CreatedTime)
                 .Select(o => new
@@ -33,7 +52,8 @@ namespace Restaurant
                 result.GroupBy(o => o.RuntimeStatus).Select(og => new
                 {
                     Status = og.Key.ToString(),
-                    Orchestrators = og.ToList()
+                    Count = og.Count(),
+                    Orchestrators = expandResults ? og.ToList() : null
                 })
             );
         }
