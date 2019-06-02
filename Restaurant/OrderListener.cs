@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Core;
 using Core.Entities;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -23,8 +25,8 @@ namespace Restaurant
             [OrchestrationClient] DurableOrchestrationClientBase starter,
             ILogger log)
         {
-            await EnsureInventoryCheckerIsRunning(starter, Constants.InventoryCheckerOrchestratorId, Constants.InventoryCheckerEternalOrchestratorFunctionName);
-            await EnsureInventoryCheckerIsRunning(starter, Constants.SupplierOrderReceiverOrchestratorId, Constants.SupplierOrderReceiverOrchestratorFunctionName);
+            await EnsureSingletonOrchestratorIsRunning(starter, Constants.InventoryCheckerOrchestratorId, Constants.InventoryCheckerEternalOrchestratorFunctionName);
+            await EnsureSingletonOrchestratorIsRunning(starter, Constants.SupplierOrderReceiverOrchestratorId, Constants.SupplierOrderReceiverOrchestratorFunctionName);
 
             foreach (var document in inputDocuments)
             {
@@ -42,7 +44,7 @@ namespace Restaurant
         }
 
         
-        private static async Task EnsureInventoryCheckerIsRunning(DurableOrchestrationClientBase starter, string singletonOrchestratorId, 
+        private static async Task EnsureSingletonOrchestratorIsRunning(DurableOrchestrationClientBase starter, string singletonOrchestratorId, 
             string singletonOrchestratorFunctionName)
         {
             // Check if an instance with the specified ID already exists.
@@ -63,5 +65,22 @@ namespace Restaurant
                 }
             }
         }
+
+#if DEBUG
+        [FunctionName("Debug_Start_Singletons")]
+        public static async Task<HttpResponseMessage> HttpStart(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get")]HttpRequestMessage req,
+            [OrchestrationClient]DurableOrchestrationClient starter,
+            ILogger log)
+        {
+            await EnsureSingletonOrchestratorIsRunning(starter, Constants.InventoryCheckerOrchestratorId, Constants.InventoryCheckerEternalOrchestratorFunctionName);
+            await EnsureSingletonOrchestratorIsRunning(starter, Constants.SupplierOrderReceiverOrchestratorId, Constants.SupplierOrderReceiverOrchestratorFunctionName);
+
+            return new HttpResponseMessage
+            {
+                StatusCode = System.Net.HttpStatusCode.OK
+            };
+        }
+#endif
     }
 }
